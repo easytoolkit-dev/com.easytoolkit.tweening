@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using EasyToolkit.Core;
 using EasyToolkit.Core.Mathematics;
-using UnityEngine;
 
 namespace EasyToolkit.Tweening
 {

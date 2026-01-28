@@ -1,9 +1,7 @@
 using System;
-using EasyToolkit.Core;
 using EasyToolkit.Core.Diagnostics;
 using EasyToolkit.Core.Mathematics;
 using EasyToolkit.Core.Patterns;
-using EasyToolkit.Core.Patterns.StateMachines;
 using EasyToolkit.Core.Textual;
 using UnityEngine;
 
