@@ -1,0 +1,21 @@
+{
+  "name": "com.easytoolkit.tweening",
+  "version": "1.0.0",
+  "displayName": "EasyToolkit Tweening",
+  "description": "Tweening animation system for Unity",
+  "unity": "2022.3",
+  "unityRelease": "55f1",
+  "license": "MIT",
+  "author": {
+    "name": "easytoolkit-dev",
+    "email": "2907142541@qq.com",
+    "url": "https://github.com/easytoolkit-dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/easytoolkit-dev/com.easytoolkit.tweening"
+  },
+  "dependencies": {
+    "com.easytoolkit.core": "1.0.0"
+  }
+}
