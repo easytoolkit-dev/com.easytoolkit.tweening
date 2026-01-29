@@ -25,7 +25,7 @@ namespace EasyToolkit.Fluxion
 
             _fluxEvaluatorTypeMatcher.SetTypeMatchCandidates(
                 types.Select((type, i) => new TypeMatchCandidate(type, types.Length - i,
-                    type.GetGenericArgumentsRelativeTo(typeof(AbstractFluxEvaluator<,>)))));
+                    type.GetGenericArgumentsRelativeTo(typeof(FluxEvaluatorBase<,>)))));
         }
 
         private readonly Dictionary<(Type, Type), Type> _fluxEvaluatorTypesByValueType = new();

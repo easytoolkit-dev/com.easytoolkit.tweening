@@ -6,11 +6,11 @@ namespace EasyToolkit.Fluxion
 {
     public static class FluxFactory
     {
-        public static Flow To(Type valueType, FluxGetter getter, FluxSetter setter, object endValue,
+        public static Flow To(Type valueType, FluxValueGetter valueGetter, FluxValueSetter valueSetter, object endValue,
             float duration)
         {
             var flow = new Flow();
-            flow.Apply(valueType, getter, setter, endValue);
+            flow.Apply(valueType, valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
             // Explicitly attach to engine
@@ -19,9 +19,9 @@ namespace EasyToolkit.Fluxion
             return flow;
         }
 
-        public static Flow To<T>(FluxGetter<T> getter, FluxSetter<T> setter, T endValue, float duration)
+        public static Flow To<T>(FluxValueGetter<T> valueGetter, FluxValueSetter<T> valueSetter, T endValue, float duration)
         {
-            return To(typeof(T), () => getter(), val => setter((T)val), endValue, duration);
+            return To(typeof(T), () => valueGetter(), val => valueSetter((T)val), endValue, duration);
         }
 
         public static FluxSequence Sequence()
