@@ -1,21 +1,20 @@
 using System;
+using EasyToolkit.Fluxion.Core;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FluxCallbackExtensions
     {
-        public static FluxCallback AddCallback(this FluxCallback tweenCallback, Action callback)
+        public static IFluxCallback AddCallback(this IFluxCallback fluxCallback, Action callback)
         {
-            tweenCallback.AddCallback(callback);
-            return tweenCallback;
+            fluxCallback.Callback += callback;
+            return fluxCallback;
         }
 
-        public static FluxCallback RemoveCallback(this FluxCallback tweenCallback, Action callback)
+        public static IFluxCallback RemoveCallback(this IFluxCallback fluxCallback, Action callback)
         {
-            // FluxCallback property Callback has get/set.
-            // We can just manipulate the delegate.
-            tweenCallback.Callback -= callback;
-            return tweenCallback;
+            fluxCallback.Callback -= callback;
+            return fluxCallback;
         }
     }
 }

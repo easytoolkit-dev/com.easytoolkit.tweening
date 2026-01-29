@@ -1,7 +1,7 @@
 using EasyToolkit.Core.Mathematics;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Eases
 {
     public static class EaseFactory
     {
@@ -10,7 +10,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase Linear()
         {
-            return new GenericFlowEase(time => time);
+            return new Implementations.GenericFlowEase(time => time);
         }
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InSine()
         {
-            return new GenericFlowEase(time => 1f - Mathf.Cos((time * Mathf.PI) / 2f));
+            return new Implementations.GenericFlowEase(time => 1f - Mathf.Cos((time * Mathf.PI) / 2f));
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutSine()
         {
-            return new GenericFlowEase(time => Mathf.Sin((time * Mathf.PI) / 2f));
+            return new Implementations.GenericFlowEase(time => Mathf.Sin((time * Mathf.PI) / 2f));
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutSine()
         {
-            return new GenericFlowEase(time => -(Mathf.Cos(Mathf.PI * time) - 1f) / 2f);
+            return new Implementations.GenericFlowEase(time => -(Mathf.Cos(Mathf.PI * time) - 1f) / 2f);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InQuad()
         {
-            return new InExponentialFlowEase().SetPow(2f);
+            return new Implementations.InExponentialFlowEase().SetPow(2f);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutQuad()
         {
-            return new OutExponentialFlowEase().SetPow(2f);
+            return new Implementations.OutExponentialFlowEase().SetPow(2f);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutQuad()
         {
-            return new InOutExponentialFlowEase().SetPow(2f);
+            return new Implementations.InOutExponentialFlowEase().SetPow(2f);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InCubic()
         {
-            return new InExponentialFlowEase().SetPow(3f);
+            return new Implementations.InExponentialFlowEase().SetPow(3f);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutCubic()
         {
-            return new OutExponentialFlowEase().SetPow(3f);
+            return new Implementations.OutExponentialFlowEase().SetPow(3f);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutCubic()
         {
-            return new InOutExponentialFlowEase().SetPow(3f);
+            return new Implementations.InOutExponentialFlowEase().SetPow(3f);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InQuart()
         {
-            return new InExponentialFlowEase().SetPow(4f);
+            return new Implementations.InExponentialFlowEase().SetPow(4f);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutQuart()
         {
-            return new OutExponentialFlowEase().SetPow(4f);
+            return new Implementations.OutExponentialFlowEase().SetPow(4f);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutQuart()
         {
-            return new InOutExponentialFlowEase().SetPow(4f);
+            return new Implementations.InOutExponentialFlowEase().SetPow(4f);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InQuint()
         {
-            return new InExponentialFlowEase().SetPow(5f);
+            return new Implementations.InExponentialFlowEase().SetPow(5f);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutQuint()
         {
-            return new OutExponentialFlowEase().SetPow(5f);
+            return new Implementations.OutExponentialFlowEase().SetPow(5f);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutQuint()
         {
-            return new InOutExponentialFlowEase().SetPow(5f);
+            return new Implementations.InOutExponentialFlowEase().SetPow(5f);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace EasyToolkit.Fluxion
         /// <param name="power">指数次方</param>
         public static IFlowEase InExponential(float power)
         {
-            return new InExponentialFlowEase().SetPow(power);
+            return new Implementations.InExponentialFlowEase().SetPow(power);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace EasyToolkit.Fluxion
         /// <param name="power">指数次方</param>
         public static IFlowEase OutExponential(float power)
         {
-            return new OutExponentialFlowEase().SetPow(power);
+            return new Implementations.OutExponentialFlowEase().SetPow(power);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace EasyToolkit.Fluxion
         /// <param name="power">指数次方</param>
         public static IFlowEase InOutExponential(float power)
         {
-            return new InOutExponentialFlowEase().SetPow(power);
+            return new Implementations.InOutExponentialFlowEase().SetPow(power);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace EasyToolkit.Fluxion
         public static IFlowEase InBack()
         {
             const float c1 = 1.70158f;
-            return new GenericFlowEase(time => c1 * time * time * time - c1 * time * time);
+            return new Implementations.GenericFlowEase(time => c1 * time * time * time - c1 * time * time);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace EasyToolkit.Fluxion
         public static IFlowEase OutBack()
         {
             const float c1 = 1.70158f;
-            return new GenericFlowEase(time =>
+            return new Implementations.GenericFlowEase(time =>
             {
                 float t1 = time - 1f;
                 return 1f + c1 * t1 * t1 * t1 + c1 * t1 * t1;
@@ -188,7 +188,7 @@ namespace EasyToolkit.Fluxion
         public static IFlowEase InOutBack()
         {
             const float c1 = 1.70158f * 1.525f;
-            return new GenericFlowEase(time => time < 0.5f
+            return new Implementations.GenericFlowEase(time => time < 0.5f
                 ? (Mathf.Pow(2f * time, 2f) * ((c1 + 1f) * 2f * time - c1)) / 2f
                 : (Mathf.Pow(2f * time - 2f, 2f) * ((c1 + 1f) * (time * 2f - 2f) + c1) + 2f) / 2f);
         }
@@ -198,7 +198,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InElastic()
         {
-            return new GenericFlowEase(time =>
+            return new Implementations.GenericFlowEase(time =>
             {
                 if (time == 0f || time.IsApproximatelyOf(1f)) return time;
                 const float c = (2f * Mathf.PI) / 0.3f;
@@ -211,7 +211,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutElastic()
         {
-            return new GenericFlowEase(time =>
+            return new Implementations.GenericFlowEase(time =>
             {
                 if (time == 0f || time.IsApproximatelyOf(1f)) return time;
                 const float c = (2f * Mathf.PI) / 0.3f;
@@ -224,7 +224,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutElastic()
         {
-            return new GenericFlowEase(time =>
+            return new Implementations.GenericFlowEase(time =>
             {
                 if (time == 0f || time.IsApproximatelyOf(1f)) return time;
                 const float c = (2f * Mathf.PI) / 0.45f;
@@ -239,7 +239,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InBounce()
         {
-            return new GenericFlowEase(time => 1f - BounceEaseOut(1f - time));
+            return new Implementations.GenericFlowEase(time => 1f - BounceEaseOut(1f - time));
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase OutBounce()
         {
-            return new GenericFlowEase(time => BounceEaseOut(time));
+            return new Implementations.GenericFlowEase(time => BounceEaseOut(time));
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         public static IFlowEase InOutBounce()
         {
-            return new GenericFlowEase(time => time < 0.5f
+            return new Implementations.GenericFlowEase(time => time < 0.5f
                 ? (1f - BounceEaseOut(1f - 2f * time)) / 2f
                 : (1f + BounceEaseOut(2f * time - 1f)) / 2f);
         }

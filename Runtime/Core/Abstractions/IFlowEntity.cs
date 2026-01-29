@@ -1,4 +1,4 @@
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
     /// <summary>
     /// Internal interface for Flow entities, combining public Flow API and internal Entity requirements.

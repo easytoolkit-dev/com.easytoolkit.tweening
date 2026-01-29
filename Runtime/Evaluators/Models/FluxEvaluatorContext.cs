@@ -1,4 +1,6 @@
-﻿namespace EasyToolkit.Fluxion
+﻿using EasyToolkit.Fluxion.Profiles;
+
+namespace EasyToolkit.Fluxion.Evaluators
 {
     public class FluxEvaluatorContext
     {

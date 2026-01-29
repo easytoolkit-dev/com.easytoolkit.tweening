@@ -1,6 +1,8 @@
+using EasyToolkit.Fluxion.Eases;
+using EasyToolkit.Fluxion.Profiles;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
     /// <summary>
     /// Interface for the public API of a Flow (Tween) object.

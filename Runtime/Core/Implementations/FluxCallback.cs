@@ -1,18 +1,12 @@
 using System;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core.Implementations
 {
-    public class FluxCallback : FluxBase
+    internal class FluxCallback : FluxBase, IFluxCallback
     {
         public override float? Duration => null;
 
-        internal Action Callback { get; set; }
-
-        public FluxCallback AddCallback(Action callback)
-        {
-            Callback += callback;
-            return this;
-        }
+        public event Action Callback;
 
         protected override void OnStart()
         {

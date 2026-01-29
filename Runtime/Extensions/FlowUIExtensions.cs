@@ -1,20 +1,21 @@
 using EasyToolkit.Core.Mathematics;
+using EasyToolkit.Fluxion.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FlowUIExtensions
     {
-        public static Flow DoAnchorPos(this RectTransform target, Vector2 to, float duration)
+        public static IFlow DoAnchorPos(this RectTransform target, Vector2 to, float duration)
         {
             return FluxFactory.To(() => target.anchoredPosition, pos => target.anchoredPosition = pos,
                     to, duration)
                 .SetUnityObject(target);
         }
 
-        public static Flow DoAnchorPosX(this RectTransform target, float to, float duration)
+        public static IFlow DoAnchorPosX(this RectTransform target, float to, float duration)
         {
             return FluxFactory.To(() => target.anchoredPosition.x,
                     x => target.anchoredPosition = target.anchoredPosition.WithX(x),
@@ -22,7 +23,7 @@ namespace EasyToolkit.Fluxion
                 .SetUnityObject(target);
         }
 
-        public static Flow DoAnchorPosY(this RectTransform target, float to, float duration)
+        public static IFlow DoAnchorPosY(this RectTransform target, float to, float duration)
         {
             return FluxFactory.To(() => target.anchoredPosition.y,
                     y => target.anchoredPosition = target.anchoredPosition.WithY(y),
@@ -30,19 +31,19 @@ namespace EasyToolkit.Fluxion
                 .SetUnityObject(target);
         }
 
-        public static Flow DoFade(this CanvasGroup target, float to, float duration)
+        public static IFlow DoFade(this CanvasGroup target, float to, float duration)
         {
             return FluxFactory.To(() => target.alpha, val => target.alpha = val, to, duration)
                 .SetUnityObject(target);
         }
 
-        public static Flow DoMaxVisibleCharacters(this TextMeshProUGUI target, int to, float duration)
+        public static IFlow DoMaxVisibleCharacters(this TextMeshProUGUI target, int to, float duration)
         {
             return FluxFactory.To(() => target.maxVisibleCharacters, val => target.maxVisibleCharacters = val, to, duration)
                 .SetUnityObject(target);
         }
 
-        public static Flow DoSpritesAnim(this Image target, Sprite[] sprites, float duration)
+        public static IFlow DoSpritesAnim(this Image target, Sprite[] sprites, float duration)
         {
             return FluxUtility.PlaySpritesAnim(sprite => target.sprite = sprite, sprites, duration)
                 .SetUnityObject(target);

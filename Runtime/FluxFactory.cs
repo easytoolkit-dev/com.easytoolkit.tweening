@@ -1,15 +1,14 @@
 using System;
-using EasyToolkit.Core.Textual;
-using UnityEngine;
+using EasyToolkit.Fluxion.Core;
 
 namespace EasyToolkit.Fluxion
 {
     public static class FluxFactory
     {
-        public static Flow To(Type valueType, FluxValueGetter valueGetter, FluxValueSetter valueSetter, object endValue,
+        public static IFlow To(Type valueType, FluxValueGetter valueGetter, FluxValueSetter valueSetter, object endValue,
             float duration)
         {
-            var flow = new Flow();
+            var flow = new Core.Implementations.Flow();
             flow.Apply(valueType, valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
@@ -19,21 +18,22 @@ namespace EasyToolkit.Fluxion
             return flow;
         }
 
-        public static Flow To<T>(FluxValueGetter<T> valueGetter, FluxValueSetter<T> valueSetter, T endValue, float duration)
+        public static IFlow To<T>(FluxValueGetter<T> valueGetter, FluxValueSetter<T> valueSetter, T endValue, float duration)
         {
             return To(typeof(T), () => valueGetter(), val => valueSetter((T)val), endValue, duration);
         }
 
-        public static FluxSequence Sequence()
+        public static IFluxSequence Sequence()
         {
-            var sequence = new FluxSequence();
+            var sequence = new Core.Implementations.FluxSequence();
             FluxEngine.Instance.Attach(sequence);
             return sequence;
         }
 
-        public static FluxCallback Callback(Action callback)
+        public static IFluxCallback Callback(Action callback)
         {
-            var flux = new FluxCallback().AddCallback(callback);
+            var flux = new Core.Implementations.FluxCallback();
+            flux.Callback += callback;
             FluxEngine.Instance.Attach(flux);
             return flux;
         }
@@ -43,10 +43,10 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         /// <param name="duration">间隔时间（秒）</param>
         /// <returns>间隔Flux对象</returns>
-        public static FluxInterval Interval(float duration)
+        public static IFluxInterval Interval(float duration)
         {
-            var interval = new FluxInterval();
-            interval.SetDuration(duration);
+            IFluxInterval interval = new Core.Implementations.FluxInterval();
+            interval.Duration = duration;
             FluxEngine.Instance.Attach(interval);
             return interval;
         }

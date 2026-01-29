@@ -1,6 +1,7 @@
 ﻿using System;
+using EasyToolkit.Fluxion.Profiles;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Evaluators
 {
     public interface IFluxEvaluator
     {

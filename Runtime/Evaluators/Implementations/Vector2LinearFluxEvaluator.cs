@@ -1,9 +1,7 @@
-using System;
-using EasyToolkit.Core;
-using EasyToolkit.Core.Mathematics;
+using EasyToolkit.Fluxion.Profiles;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Evaluators.Implementations
 {
     public class Vector2LinearFluxEvaluator : FluxEvaluatorBase<Vector2, LinearFluxProfile>
     {

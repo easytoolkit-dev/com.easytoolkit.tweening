@@ -5,9 +5,9 @@ using EasyToolkit.Core.Patterns;
 using EasyToolkit.Core.Textual;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core.Implementations
 {
-    public abstract class FluxBase : IFluxEntity
+    internal abstract class FluxBase : IFluxEntity
     {
         private string _id;
         private bool _pendingKillSelf;

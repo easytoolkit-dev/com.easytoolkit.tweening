@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Eases.Implementations
 {
-    public class GenericFlowEase : IFlowEase
+    internal class GenericFlowEase : IFlowEase
     {
         private readonly Func<float, float> _easeTime;
 

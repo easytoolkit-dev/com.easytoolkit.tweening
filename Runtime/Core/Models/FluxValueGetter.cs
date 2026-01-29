@@ -1,4 +1,4 @@
-﻿namespace EasyToolkit.Fluxion
+﻿namespace EasyToolkit.Fluxion.Core
 {
     public delegate object FluxValueGetter();
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
     /// <summary>
     /// Interface for the public API of a Flux object.

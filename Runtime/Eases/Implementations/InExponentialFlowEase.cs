@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Eases.Implementations
 {
-    public class InExponentialFlowEase : IFlowEase
+    internal class InExponentialFlowEase : IFlowEase
     {
         private float _power = 2;
 

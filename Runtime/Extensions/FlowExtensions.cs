@@ -1,6 +1,8 @@
+using EasyToolkit.Fluxion.Core;
+using EasyToolkit.Fluxion.Eases;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FlowExtensions
     {

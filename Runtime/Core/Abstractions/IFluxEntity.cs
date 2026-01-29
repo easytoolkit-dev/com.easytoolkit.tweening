@@ -1,4 +1,4 @@
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
     /// <summary>
     /// Internal interface for Flux entities, defining methods required for the Flux engine's operation.

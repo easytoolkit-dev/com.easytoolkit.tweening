@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using EasyToolkit.Core.Mathematics;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core.Implementations
 {
-    class FluxSequenceClip
+    internal class FluxSequenceClip
     {
         private readonly List<IFlux> _totalFluxes = new List<IFlux>();
         private readonly RunningFluxList _runningFluxes = new RunningFluxList();
@@ -51,7 +51,7 @@ namespace EasyToolkit.Fluxion
         }
     }
 
-    public class FluxSequence : FluxBase
+    internal class FluxSequence : FluxBase, IFluxSequence
     {
         private readonly List<FluxSequenceClip> _fluxClips = new List<FluxSequenceClip>();
         private int _currentClipIndex;

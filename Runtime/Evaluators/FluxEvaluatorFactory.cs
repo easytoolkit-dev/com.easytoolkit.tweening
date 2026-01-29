@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using EasyToolkit.Core;
 using EasyToolkit.Core.Collections;
 using EasyToolkit.Core.Patterns;
 using EasyToolkit.Core.Reflection;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Evaluators
 {
-    internal class FluxEvaluatorFactory : Singleton<FluxEvaluatorFactory>
+    public class FluxEvaluatorFactory : Singleton<FluxEvaluatorFactory>
     {
         private readonly ITypeMatcher _fluxEvaluatorTypeMatcher = TypeMatcherFactory.CreateDefault();
 
@@ -25,7 +24,7 @@ namespace EasyToolkit.Fluxion
 
             _fluxEvaluatorTypeMatcher.SetTypeMatchCandidates(
                 types.Select((type, i) => new TypeMatchCandidate(type, types.Length - i,
-                    type.GetGenericArgumentsRelativeTo(typeof(FluxEvaluatorBase<,>)))));
+                    type.GetGenericArgumentsRelativeTo(typeof(IFluxEvaluator<,>)))));
         }
 
         private readonly Dictionary<(Type, Type), Type> _fluxEvaluatorTypesByValueType = new();

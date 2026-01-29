@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EasyToolkit.Core.Patterns;
 using EasyToolkit.Core.Textual;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
     [MonoSingletonConfiguration(MonoSingletonFlags.DontDestroyOnLoad)]
     public class FluxEngine : MonoSingleton<FluxEngine>

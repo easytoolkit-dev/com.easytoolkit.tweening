@@ -1,10 +1,13 @@
 using System;
 using EasyToolkit.Core.Diagnostics;
 using EasyToolkit.Core.Mathematics;
+using EasyToolkit.Fluxion.Eases;
+using EasyToolkit.Fluxion.Evaluators;
+using EasyToolkit.Fluxion.Profiles;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core.Implementations
 {
-    public class Flow : FluxBase, IFlowEntity
+    internal class Flow : FluxBase, IFlowEntity
     {
         private object _startValue;
         private object _endValue;

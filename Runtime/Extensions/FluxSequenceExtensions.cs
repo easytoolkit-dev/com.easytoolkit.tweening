@@ -1,14 +1,16 @@
-namespace EasyToolkit.Fluxion
+using EasyToolkit.Fluxion.Core;
+
+namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FluxSequenceExtensions
     {
-        public static FluxSequence Append(this FluxSequence sequence, IFlux tween)
+        public static IFluxSequence Append(this IFluxSequence sequence, IFlux tween)
         {
             sequence.AddFluxAsNewClip(tween);
             return sequence;
         }
 
-        public static FluxSequence Join(this FluxSequence sequence, IFlux tween)
+        public static IFluxSequence Join(this IFluxSequence sequence, IFlux tween)
         {
             sequence.AddFluxToLastClip(tween);
             return sequence;

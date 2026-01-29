@@ -1,6 +1,7 @@
 using System;
+using EasyToolkit.Fluxion.Core;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FluxExtensions
     {

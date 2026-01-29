@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Profiles
 {
     public class BezierFluxProfile : IFluxProfile
     {

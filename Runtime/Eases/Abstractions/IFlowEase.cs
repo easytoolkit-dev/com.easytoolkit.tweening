@@ -1,4 +1,4 @@
-﻿namespace EasyToolkit.Fluxion
+﻿namespace EasyToolkit.Fluxion.Eases
 {
     public interface IFlowEase
     {

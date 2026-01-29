@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace EasyToolkit.Fluxion
+namespace EasyToolkit.Fluxion.Core
 {
-    internal static class FluxUtility
+    public static class FluxUtility
     {
-        public static Flow PlaySpritesAnim(Action<Sprite> spriteSetter, Sprite[] sprites, float duration)
+        public static IFlow PlaySpritesAnim(Action<Sprite> spriteSetter, Sprite[] sprites, float duration)
         {
             int index = 0;
             return FluxFactory.To(() => index, x =>
