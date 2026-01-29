@@ -11,17 +11,23 @@ namespace EasyToolkit.Fluxion.Evaluators
         Type ProfileType { get; }
         FluxEvaluatorContext Context { get; }
 
-        object GetRelativeValueUntyped(object value, object relative);
-        float GetDistance();
         void Initialize();
+        float GetDistance();
+        object GetRelativeValueUntyped(object value, object relative);
         object ProcessUntyped(float normalizedTime);
     }
 
-    public interface IFluxEvaluator<TValue, TProfile> : IFluxEvaluator
+    public interface IFluxEvaluator<TValue> : IFluxEvaluator
+    {
+        new FluxEvaluatorContext<TValue> Context { get; }
+
+        TValue GetRelativeValue(TValue value, TValue relative);
+        TValue Process(float normalizedTime);
+    }
+
+    public interface IFluxEvaluator<TValue, TProfile> : IFluxEvaluator<TValue>
         where TProfile : IFluxProfile
     {
         new FluxEvaluatorContext<TValue, TProfile> Context { get; }
-        TValue GetRelativeValue(TValue value, TValue relative);
-        TValue Process(float normalizedTime);
     }
 }

@@ -23,6 +23,8 @@ namespace EasyToolkit.Fluxion.Evaluators.Implementations
         Type IFluxEvaluator.ProfileType => typeof(TProfile);
         FluxEvaluatorContext IFluxEvaluator.Context => Context;
 
+        FluxEvaluatorContext<TValue> IFluxEvaluator<TValue>.Context => Context;
+
         object IFluxEvaluator.GetRelativeValueUntyped(object value, object relative)
         {
             return GetRelativeValue((TValue)value, (TValue)relative);

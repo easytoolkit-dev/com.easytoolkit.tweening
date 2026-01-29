@@ -33,6 +33,10 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         public FluxState CurrentState => _state.CurrentStateKey;
 
         public IFlux OwnerSequence { get; set; }
+        public event Action<IFlux> Played;
+        public event Action<IFlux> Paused;
+        public event Action<IFlux> Completed;
+        public event Action<IFlux> Killed;
 
         public bool IsPendingKill
         {
@@ -57,20 +61,11 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>();
         private bool _pause;
         private float _playElapsedTime;
-        private Action<IFlux> _onPlay;
-        private Action<IFlux> _onPause;
-        private Action<IFlux> _onComplete;
-        private Action<IFlux> _onKill;
 
         public void Kill()
         {
             _pendingKillSelf = true;
         }
-
-        public void AddPlayCallback(Action<IFlux> callback) => _onPlay += callback;
-        public void AddPauseCallback(Action<IFlux> callback) => _onPause += callback;
-        public void AddCompleteCallback(Action<IFlux> callback) => _onComplete += callback;
-        public void AddKillCallback(Action<IFlux> callback) => _onKill += callback;
 
 
         protected FluxBase()
@@ -88,10 +83,10 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             OwnerSequence = null;
             LastPlayTime = null;
 
-            _onPlay = null;
-            _onPause = null;
-            _onComplete = null;
-            _onKill = null;
+            Played = null;
+            Paused = null;
+            Completed = null;
+            Killed = null;
 
             _pause = false;
             _playElapsedTime = 0f;
@@ -131,16 +126,16 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 case FluxState.DelayAfterPlay:
                     break;
                 case FluxState.Playing:
-                    _onPlay?.Invoke(this);
+                    Played?.Invoke(this);
                     break;
                 case FluxState.Paused:
-                    _onPause?.Invoke(this);
+                    Paused?.Invoke(this);
                     break;
                 case FluxState.Completed:
-                    _onComplete?.Invoke(this);
+                    Completed?.Invoke(this);
                     break;
                 case FluxState.Killed:
-                    _onKill?.Invoke(this);
+                    Killed?.Invoke(this);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);

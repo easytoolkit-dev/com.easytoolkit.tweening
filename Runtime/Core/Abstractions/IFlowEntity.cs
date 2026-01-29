@@ -6,4 +6,8 @@ namespace EasyToolkit.Fluxion.Core
     internal interface IFlowEntity : IFlow, IFluxEntity
     {
     }
+
+    internal interface IFlowEntity<TValue> : IFlowEntity, IFlow<TValue>
+    {
+    }
 }

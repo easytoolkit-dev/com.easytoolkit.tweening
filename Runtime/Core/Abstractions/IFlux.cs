@@ -50,30 +50,11 @@ namespace EasyToolkit.Fluxion.Core
         /// </summary>
         IFlux OwnerSequence { get; }
 
+        event Action<IFlux> Played;
+        event Action<IFlux> Paused;
+        event Action<IFlux> Completed;
+        event Action<IFlux> Killed;
+
         void Kill();
-
-        /// <summary>
-        /// Adds a callback to be invoked when the Flux starts playing.
-        /// </summary>
-        /// <param name="callback">The callback action.</param>
-        void AddPlayCallback(Action<IFlux> callback);
-
-        /// <summary>
-        /// Adds a callback to be invoked when the Flux is paused.
-        /// </summary>
-        /// <param name="callback">The callback action.</param>
-        void AddPauseCallback(Action<IFlux> callback);
-
-        /// <summary>
-        /// Adds a callback to be invoked when the Flux completes.
-        /// </summary>
-        /// <param name="callback">The callback action.</param>
-        void AddCompleteCallback(Action<IFlux> callback);
-
-        /// <summary>
-        /// Adds a callback to be invoked when the Flux is killed.
-        /// </summary>
-        /// <param name="callback">The callback action.</param>
-        void AddKillCallback(Action<IFlux> callback);
     }
 }

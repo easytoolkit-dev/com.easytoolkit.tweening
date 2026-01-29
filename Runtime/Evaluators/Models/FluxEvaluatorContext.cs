@@ -9,11 +9,15 @@ namespace EasyToolkit.Fluxion.Evaluators
         public object EndValue { get; set; }
     }
 
-    public class FluxEvaluatorContext<TValue, TProfile> : FluxEvaluatorContext
+    public class FluxEvaluatorContext<TValue> : FluxEvaluatorContext
+    {
+        public new TValue StartValue { get; set; }
+        public new TValue EndValue { get; set; }
+    }
+
+    public class FluxEvaluatorContext<TValue, TProfile> : FluxEvaluatorContext<TValue>
         where TProfile : IFluxProfile
     {
         public new TProfile Profile { get; set; }
-        public new TValue StartValue { get; set; }
-        public new TValue EndValue { get; set; }
     }
 }

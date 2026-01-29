@@ -28,12 +28,6 @@ namespace EasyToolkit.Fluxion.Extensions
             return flow;
         }
 
-        public static T WithEase<T>(this T flow, IFlowEase ease) where T : IFlow
-        {
-            flow.Ease = ease;
-            return flow;
-        }
-
         public static T WithRelative<T>(this T flow, bool isRelative = true) where T : IFlow
         {
             flow.IsRelative = isRelative;

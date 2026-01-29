@@ -24,26 +24,26 @@ namespace EasyToolkit.Fluxion.Extensions
 
         public static T OnPlay<T>(this T tween, Action callback) where T : IFlux
         {
-            tween.AddPlayCallback(_ => callback());
+            tween.Played += _ => callback();
             return tween;
         }
 
         public static T OnPause<T>(this T tween, Action callback) where T : IFlux
         {
-            tween.AddPauseCallback(_ => callback());
+            tween.Paused += _ => callback();
             return tween;
         }
 
         public static T OnComplete<T>(this T tween, Action callback) where T : IFlux
         {
-            tween.AddCompleteCallback(_ => callback());
+            tween.Completed += _ => callback();
             return tween;
         }
 
 
         public static T OnKill<T>(this T tween, Action callback) where T : IFlux
         {
-            tween.AddKillCallback(_ => callback());
+            tween.Killed += _ => callback();
             return tween;
         }
 

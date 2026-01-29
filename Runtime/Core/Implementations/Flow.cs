@@ -7,18 +7,19 @@ using EasyToolkit.Fluxion.Profiles;
 
 namespace EasyToolkit.Fluxion.Core.Implementations
 {
-    internal class Flow : FluxBase, IFlowEntity
+    internal class Flow<TValue> : FluxBase, IFlowEntity<TValue>
     {
-        private object _startValue;
-        private object _endValue;
-        private Type _valueType;
-        private FluxValueGetter _valueGetter;
-        private FluxValueSetter _valueSetter;
+        private TValue _startValue;
+        private TValue _endValue;
+        private FluxValueGetter<TValue> _valueGetter;
+        private FluxValueSetter<TValue> _valueSetter;
 
         private float _duration;
         private bool _hasUnityObject;
 
         private UnityEngine.Object _unityObject;
+        public Type ValueType => typeof(TValue);
+
         public UnityEngine.Object UnityObject
         {
             get => _unityObject;
@@ -43,7 +44,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         public bool IsRelative { get; set; }
 
         private IFluxProfile _profile;
-        private IFluxEvaluator _processor;
+        private IFluxEvaluator<TValue> _evaluator;
         private float? _actualDuration;
 
         public override float? Duration
@@ -59,7 +60,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 {
                     if (CurrentState == FluxState.Idle)
                         return null;
-                    _actualDuration = _processor.GetDistance() / _duration;
+                    _actualDuration = _evaluator.GetDistance() / _duration;
                 }
                 else
                 {
@@ -79,9 +80,8 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         protected override void OnReset()
         {
             base.OnReset();
-            _startValue = null;
-            _endValue = null;
-            _valueType = null;
+            _startValue = default;
+            _endValue = default;
             _valueGetter = null;
             _valueSetter = null;
             _duration = 0f;
@@ -97,14 +97,13 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             if (_profile == null || profile.GetType() != _profile.GetType())
             {
-                _processor = FluxEvaluatorFactory.Instance.GetFluxEvaluator(_valueType, profile.GetType());
+                _evaluator = (IFluxEvaluator<TValue>)FluxEvaluatorFactory.Instance.GetFluxEvaluator(ValueType, profile.GetType());
             }
             _profile = profile;
         }
 
-        internal void Apply(Type valueType, FluxValueGetter valueGetter, FluxValueSetter valueSetter, object endValue)
+        internal void Apply(FluxValueGetter<TValue> valueGetter, FluxValueSetter<TValue> valueSetter, TValue endValue)
         {
-            _valueType = valueType;
             _valueGetter = valueGetter;
             _valueSetter = valueSetter;
             _endValue = endValue;
@@ -125,7 +124,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             if (_profile == null)
             {
-                SetProfile(ProfileFactory.Linear());
+                SetProfile(new LinearFluxProfile());
             }
 
             if (IsInLoop)
@@ -146,14 +145,14 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 _startValue = _valueGetter();
                 if (IsRelative)
                 {
-                    _endValue = _processor.GetRelativeValueUntyped(_startValue, _endValue);
+                    _endValue = _evaluator.GetRelativeValue(_startValue, _endValue);
                 }
             }
 
-            _processor.Context.Profile = _profile;
-            _processor.Context.StartValue = _startValue;
-            _processor.Context.EndValue = _endValue;
-            _processor.Initialize();
+            _evaluator.Context.Profile = _profile;
+            _evaluator.Context.StartValue = _startValue;
+            _evaluator.Context.EndValue = _endValue;
+            _evaluator.Initialize();
         }
 
         protected override void OnPlaying(float time)
@@ -168,7 +167,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             var t = MathUtility.Remap(time, 0f, Duration.Value, 0f, 1f);
             var easedT = Ease.EaseTime(t);
-            var curValue = _processor.ProcessUntyped(easedT);
+            var curValue = _evaluator.Process(easedT);
             _valueSetter(curValue);
         }
     }

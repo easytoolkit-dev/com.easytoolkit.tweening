@@ -1,6 +1,7 @@
+using System;
 using EasyToolkit.Fluxion.Eases;
 using EasyToolkit.Fluxion.Profiles;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace EasyToolkit.Fluxion.Core
 {
@@ -10,6 +11,8 @@ namespace EasyToolkit.Fluxion.Core
     /// </summary>
     public interface IFlow : IFlux
     {
+        Type ValueType { get; }
+
         /// <summary>
         /// Gets or sets the Unity Object associated with this Flow.
         /// If the object is destroyed, the Flow will be automatically killed.
@@ -40,5 +43,9 @@ namespace EasyToolkit.Fluxion.Core
         void SetDuration(float duration);
 
         void SetProfile(IFluxProfile profile);
+    }
+
+    public interface IFlow<TValue> : IFlow
+    {
     }
 }

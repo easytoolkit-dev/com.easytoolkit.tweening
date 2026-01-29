@@ -5,22 +5,20 @@ namespace EasyToolkit.Fluxion
 {
     public static class FluxFactory
     {
-        public static IFlow To(Type valueType, FluxValueGetter valueGetter, FluxValueSetter valueSetter, object endValue,
+        public static IFlow<TValue> To<TValue>(
+            FluxValueGetter<TValue> valueGetter,
+            FluxValueSetter<TValue> valueSetter,
+            TValue endValue,
             float duration)
         {
-            var flow = new Core.Implementations.Flow();
-            flow.Apply(valueType, valueGetter, valueSetter, endValue);
+            var flow = new Core.Implementations.Flow<TValue>();
+            flow.Apply(valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
             // Explicitly attach to engine
             FluxEngine.Instance.Attach(flow);
 
             return flow;
-        }
-
-        public static IFlow To<T>(FluxValueGetter<T> valueGetter, FluxValueSetter<T> valueSetter, T endValue, float duration)
-        {
-            return To(typeof(T), () => valueGetter(), val => valueSetter((T)val), endValue, duration);
         }
 
         public static IFluxSequence Sequence()

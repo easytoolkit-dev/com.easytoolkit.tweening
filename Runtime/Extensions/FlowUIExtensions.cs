@@ -37,6 +37,22 @@ namespace EasyToolkit.Fluxion.Extensions
                 .WithUnityObject(target);
         }
 
+        /// <summary>
+        /// Creates a flow that animates the alpha (transparency) of a Graphic component.
+        /// This works with Image, Text, and other UI components that inherit from Graphic.
+        /// </summary>
+        /// <param name="target">The Graphic component to animate</param>
+        /// <param name="to">The target alpha value (0-1)</param>
+        /// <param name="duration">The duration of the animation in seconds</param>
+        /// <returns>A flow that animates the Graphic's alpha</returns>
+        public static IFlow FlowFade(this Graphic target, float to, float duration)
+        {
+            return FluxFactory.To(() => target.color.a,
+                    a => target.color = target.color.WithA(a),
+                    to, duration)
+                .WithUnityObject(target);
+        }
+
         public static IFlow FlowMaxVisibleCharacters(this TextMeshProUGUI target, int to, float duration)
         {
             return FluxFactory.To(() => target.maxVisibleCharacters, val => target.maxVisibleCharacters = val, to, duration)
