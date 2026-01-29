@@ -62,6 +62,11 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         private Action<IFlux> _onComplete;
         private Action<IFlux> _onKill;
 
+        public void Kill()
+        {
+            _pendingKillSelf = true;
+        }
+
         public void AddPlayCallback(Action<IFlux> callback) => _onPlay += callback;
         public void AddPauseCallback(Action<IFlux> callback) => _onPause += callback;
         public void AddCompleteCallback(Action<IFlux> callback) => _onComplete += callback;
@@ -207,7 +212,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             }
         }
 
-        public void Kill()
+        public void HandleKill()
         {
             OnKill();
             // 注意：FluxEngine 的注销逻辑已经移出，不再在这里调用

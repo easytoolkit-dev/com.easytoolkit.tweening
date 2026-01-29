@@ -74,7 +74,7 @@ namespace EasyToolkit.Fluxion.Core
 
             foreach (var flux in _pendingKillFluxes)
             {
-                flux.Kill();
+                flux.HandleKill();
                 _runningFluxes.Remove(flux);
             }
 
@@ -87,7 +87,7 @@ namespace EasyToolkit.Fluxion.Core
             {
                 if (flux.CurrentState != FluxState.Killed)
                 {
-                    flux.Kill();
+                    flux.HandleKill();
                 }
             }
         }

@@ -33,6 +33,6 @@ namespace EasyToolkit.Fluxion.Core
         /// <summary>
         /// Kills the Flux immediately.
         /// </summary>
-        void Kill();
+        void HandleKill();
     }
 }
