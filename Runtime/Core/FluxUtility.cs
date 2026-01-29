@@ -8,7 +8,7 @@ namespace EasyToolkit.Fluxion
         public static Flow PlaySpritesAnim(Action<Sprite> spriteSetter, Sprite[] sprites, float duration)
         {
             int index = 0;
-            return FluxFactroy.To(() => index, x =>
+            return FluxFactory.To(() => index, x =>
             {
                 index = x;
                 spriteSetter(sprites[index]);

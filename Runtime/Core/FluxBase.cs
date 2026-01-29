@@ -17,90 +17,74 @@ namespace EasyToolkit.Fluxion
         Killed,
     }
 
-    public abstract class AbstractFlux
+    public abstract class FluxBase : IFluxEntity
     {
         private string _id;
-        internal string Id
+        private bool _pendingKillSelf;
+        public string Id
         {
             get => _id;
-            set
-            {
-                if (_id == value)
-                    return;
-
-                if (!string.IsNullOrEmpty(_id))
-                {
-                    FluxEngine.Instance.UnregisterFluxById(_id);
-                }
-
-                _id = value;
-
-                if (!string.IsNullOrEmpty(_id))
-                {
-                    FluxEngine.Instance.RegisterFluxById(_id, this);
-                }
-            }
+            set => _id = value;
         }
-
-        internal float? GetActualDuration() => ActualDuration;
 
         /// <summary>
         /// 获取实际的持续时间，返回null代表无法判断具体持续时间。
         /// </summary>
         /// <returns></returns>
-        protected virtual float? ActualDuration => null;
+        public virtual float? Duration => null;
 
         internal float? LastPlayTime { get; private set; }
 
-        internal float Delay { get; set; }
+        public float Delay { get; set; }
 
-        internal bool InfiniteLoop { get; set; }
-        internal int LoopCount { get; set; }
+        public bool InfiniteLoop { get; set; }
+        public int LoopCount { get; set; }
 
-        internal FluxState CurrentState => _state.CurrentStateKey;
+        public FluxState CurrentState => _state.CurrentStateKey;
 
+        public IFlux OwnerSequence { get; set; }
 
-        internal FluxSequence OwnerSequence { get; set; }
-
-        internal bool PendingKillSelf { get; set; }
-        protected internal bool IsInLoop { get; set; }
-
-        internal bool IsPendingKill()
+        public bool IsPendingKill
         {
-            if (PendingKillSelf)
+            get
             {
-                return true;
-            }
+                if (_pendingKillSelf)
+                {
+                    return true;
+                }
 
-            if (OwnerSequence != null)
-            {
-                return OwnerSequence.IsPendingKill();
+                if (OwnerSequence != null)
+                {
+                    return OwnerSequence.IsPendingKill;
+                }
+                return false;
             }
-            return false;
+            set => _pendingKillSelf = value;
         }
+
+        protected internal bool IsInLoop { get; set; }
 
         private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>();
         private bool _pause;
         private float _playElapsedTime;
-        private Action<AbstractFlux> _onPlay;
-        private Action<AbstractFlux> _onPause;
-        private Action<AbstractFlux> _onComplete;
-        private Action<AbstractFlux> _onKill;
+        private Action<IFlux> _onPlay;
+        private Action<IFlux> _onPause;
+        private Action<IFlux> _onComplete;
+        private Action<IFlux> _onKill;
 
-        public void AddPlayCallback(Action<AbstractFlux> callback) => _onPlay += callback;
-        public void AddPauseCallback(Action<AbstractFlux> callback) => _onPause += callback;
-        public void AddCompleteCallback(Action<AbstractFlux> callback) => _onComplete += callback;
-        public void AddKillCallback(Action<AbstractFlux> callback) => _onKill += callback;
+        public void AddPlayCallback(Action<IFlux> callback) => _onPlay += callback;
+        public void AddPauseCallback(Action<IFlux> callback) => _onPause += callback;
+        public void AddCompleteCallback(Action<IFlux> callback) => _onComplete += callback;
+        public void AddKillCallback(Action<IFlux> callback) => _onKill += callback;
 
 
-        protected AbstractFlux()
+        protected FluxBase()
         {
             _state.StateChanged += OnStateChanged;
             Reset();
-            FluxEngine.Instance.Attach(this);
         }
 
-        internal void Reset()
+        public void Reset()
         {
             Id = string.Empty;
             Delay = 0f;
@@ -121,7 +105,7 @@ namespace EasyToolkit.Fluxion
             OnReset();
         }
 
-        internal void Start()
+        public void Start()
         {
             _playElapsedTime = 0f;
             OnStart();
@@ -168,7 +152,7 @@ namespace EasyToolkit.Fluxion
             }
         }
 
-        internal void Update()
+        public void Update()
         {
             var stateKey = _state.CurrentStateKey;
             Assert.IsTrue(stateKey != FluxState.Idle);
@@ -215,12 +199,12 @@ namespace EasyToolkit.Fluxion
                 else
                 {
                     var time = _playElapsedTime - Delay;
-                    if (ActualDuration.HasValue && time >= ActualDuration.Value)
+                    if (Duration.HasValue && time >= Duration.Value)
                     {
                         // 减小运动误差
-                        if (!time.IsApproximatelyOf(ActualDuration.Value))
+                        if (!time.IsApproximatelyOf(Duration.Value))
                         {
-                            OnPlaying(ActualDuration.Value);
+                            OnPlaying(Duration.Value);
                         }
 
                         Complete();
@@ -233,14 +217,10 @@ namespace EasyToolkit.Fluxion
             }
         }
 
-        internal void Kill()
+        public void Kill()
         {
             OnKill();
-
-            if (Id.IsNotNullOrEmpty())
-            {
-                FluxEngine.Instance.UnregisterFluxById(Id);
-            }
+            // 注意：FluxEngine 的注销逻辑已经移出，不再在这里调用
             _state.ChangeState(FluxState.Killed);
         }
 
@@ -259,7 +239,7 @@ namespace EasyToolkit.Fluxion
             }
             else
             {
-                PendingKillSelf = true;
+                IsPendingKill = true;
             }
         }
 

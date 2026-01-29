@@ -9,19 +9,19 @@ namespace EasyToolkit.Fluxion
     public class FluxEngine : MonoSingleton<FluxEngine>
     {
         private readonly RunningFluxList _runningFluxes = new RunningFluxList();
-        private readonly Dictionary<string, AbstractFlux> _fluxesById = new Dictionary<string, AbstractFlux>();
+        private readonly Dictionary<string, IFlux> _fluxesById = new Dictionary<string, IFlux>();
 
-        public void Attach(AbstractFlux flux)
+        public void Attach(IFlux flux)
         {
-            _runningFluxes.Add(flux);
+            _runningFluxes.Add((IFluxEntity)flux);
         }
 
-        public void Detach(AbstractFlux flux)
+        public void Detach(IFlux flux)
         {
-            _runningFluxes.Remove(flux);
+            _runningFluxes.Remove((IFluxEntity)flux);
         }
 
-        internal void RegisterFluxById(string id, AbstractFlux flux)
+        public void RegisterFluxById(string id, IFlux flux)
         {
             if (id.IsNullOrEmpty())
                 return;
@@ -30,7 +30,7 @@ namespace EasyToolkit.Fluxion
             {
                 if (existingFlux != flux)
                 {
-                    if (!existingFlux.IsPendingKill())
+                    if (!existingFlux.IsPendingKill)
                     {
                         throw new ArgumentException($"The id '{id}' has been occupied.");
                     }
@@ -43,7 +43,7 @@ namespace EasyToolkit.Fluxion
             _fluxesById[id] = flux;
         }
 
-        internal void UnregisterFluxById(string id)
+        public void UnregisterFluxById(string id)
         {
             if (id.IsNullOrEmpty())
                 return;
@@ -51,7 +51,7 @@ namespace EasyToolkit.Fluxion
             _fluxesById.Remove(id);
         }
 
-        internal AbstractFlux GetFluxById(string id)
+        public IFlux GetFluxById(string id)
         {
             if (id.IsNullOrEmpty())
                 return null;

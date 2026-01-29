@@ -7,7 +7,7 @@ namespace EasyToolkit.Fluxion
 {
     class FluxSequenceClip
     {
-        private readonly List<AbstractFlux> _totalFluxes = new List<AbstractFlux>();
+        private readonly List<IFlux> _totalFluxes = new List<IFlux>();
         private readonly RunningFluxList _runningFluxes = new RunningFluxList();
         public FluxSequence Owner { get; }
 
@@ -16,7 +16,7 @@ namespace EasyToolkit.Fluxion
             Owner = owner;
         }
 
-        public void AddFlux(AbstractFlux flux)
+        public void AddFlux(IFlux flux)
         {
             if (flux.OwnerSequence != null && flux.OwnerSequence != Owner)
             {
@@ -24,9 +24,9 @@ namespace EasyToolkit.Fluxion
             }
 
             FluxEngine.Instance.Detach(flux);
-            flux.OwnerSequence = Owner;
+            ((IFluxEntity)flux).OwnerSequence = Owner;
 
-            _runningFluxes.Add(flux);
+            _runningFluxes.Add((IFluxEntity)flux);
             _totalFluxes.Add(flux);
         }
 
@@ -37,7 +37,7 @@ namespace EasyToolkit.Fluxion
 
         public float? GetDuration()
         {
-            return _totalFluxes.Max(flux => flux.GetActualDuration() ?? 0f);
+            return _totalFluxes.Max(flux => flux.Duration ?? 0f);
         }
 
         public void Update()
@@ -51,28 +51,29 @@ namespace EasyToolkit.Fluxion
         }
     }
 
-    public class FluxSequence : AbstractFlux
+    public class FluxSequence : FluxBase
     {
         private readonly List<FluxSequenceClip> _fluxClips = new List<FluxSequenceClip>();
         private int _currentClipIndex;
 
         private float? _actualDuration;
-        protected override float? ActualDuration => _actualDuration;
+        public override float? Duration => _actualDuration;
 
         protected override void OnReset()
         {
+            base.OnReset();
             _fluxClips.Clear();
             _currentClipIndex = -1;
         }
 
-        internal void AddFluxAsNewClip(AbstractFlux flux)
+        public void AddFluxAsNewClip(IFlux flux)
         {
             var node = new FluxSequenceClip(this);
-            node.AddFlux(flux);
+            node.AddFlux((IFlowEntity)flux);
             _fluxClips.Add(node);
         }
 
-        internal void AddFluxToLastClip(AbstractFlux flux)
+        public void AddFluxToLastClip(IFlux flux)
         {
             var node = _fluxClips.LastOrDefault();
             if (node == null)
@@ -81,7 +82,7 @@ namespace EasyToolkit.Fluxion
             }
             else
             {
-                node.AddFlux(flux);
+                node.AddFlux((IFlowEntity)flux);
             }
         }
 

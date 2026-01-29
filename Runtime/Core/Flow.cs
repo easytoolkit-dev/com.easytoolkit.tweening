@@ -24,7 +24,7 @@ namespace EasyToolkit.Fluxion
         Yoyo
     }
 
-    public class Flow : AbstractFlux
+    public class Flow : FluxBase, IFlowEntity
     {
         private object _startValue;
         private object _endValue;
@@ -36,7 +36,7 @@ namespace EasyToolkit.Fluxion
         private bool _hasUnityObject;
 
         private UnityEngine.Object _unityObject;
-        internal UnityEngine.Object UnityObject
+        public UnityEngine.Object UnityObject
         {
             get => _unityObject;
             set
@@ -53,17 +53,17 @@ namespace EasyToolkit.Fluxion
                 }
             }
         }
-        protected internal LoopType LoopType { get; set; }
-        protected internal IFlowEase Ease { get; set; }
+        public LoopType LoopType { get; set; }
+        public IFlowEase Ease { get; set; }
 
-        protected internal bool IsSpeedBased { get; set; }
-        protected internal bool IsRelative { get; set; }
+        public bool IsSpeedBased { get; set; }
+        public bool IsRelative { get; set; }
 
         private IFluxProfile _profile;
         private IFluxEvaluator _processor;
         private float? _actualDuration;
 
-        protected override float? ActualDuration
+        public override float? Duration
         {
             get
             {
@@ -87,7 +87,7 @@ namespace EasyToolkit.Fluxion
             }
         }
 
-        internal void SetDuration(float duration)
+        public void SetDuration(float duration)
         {
             _duration = duration;
             _actualDuration = null;
@@ -95,6 +95,7 @@ namespace EasyToolkit.Fluxion
 
         protected override void OnReset()
         {
+            base.OnReset();
             _startValue = null;
             _endValue = null;
             _valueType = null;
@@ -106,7 +107,7 @@ namespace EasyToolkit.Fluxion
             IsRelative = false;
         }
 
-        internal void SetProfileWithUpdateProcessor(IFluxProfile profile)
+        public void SetProfile(IFluxProfile profile)
         {
             if (profile == _profile)
                 return;
@@ -130,7 +131,7 @@ namespace EasyToolkit.Fluxion
         {
             if (_hasUnityObject && _unityObject == null)
             {
-                PendingKillSelf = true;
+                IsPendingKill = true;
                 return;
             }
 
@@ -141,7 +142,7 @@ namespace EasyToolkit.Fluxion
 
             if (_profile == null)
             {
-                SetProfileWithUpdateProcessor(Effect.Linear());
+                SetProfile(Effect.Linear());
             }
 
             if (IsInLoop)
@@ -176,14 +177,13 @@ namespace EasyToolkit.Fluxion
         {
             if (_hasUnityObject && _unityObject == null)
             {
-                PendingKillSelf = true;
+                IsPendingKill = true;
                 return;
             }
 
-            var duration = ActualDuration;
-            Assert.IsTrue(duration.HasValue);
+            Assert.IsTrue(Duration.HasValue);
 
-            var t = MathUtility.Remap(time, 0f, duration.Value, 0f, 1f);
+            var t = MathUtility.Remap(time, 0f, Duration.Value, 0f, 1f);
             var easedT = Ease.EaseTime(t);
             var curValue = _processor.Process(easedT);
             _setter(curValue);

@@ -2,10 +2,10 @@ using System;
 
 namespace EasyToolkit.Fluxion
 {
-    public class FluxInterval : AbstractFlux
+    public class FluxInterval : FluxBase
     {
         private float _duration;
-        protected override float? ActualDuration => _duration;
+        public override float? Duration => _duration;
 
         internal void SetDuration(float duration)
         {

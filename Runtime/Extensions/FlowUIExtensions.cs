@@ -9,14 +9,14 @@ namespace EasyToolkit.Fluxion
     {
         public static Flow DoAnchorPos(this RectTransform target, Vector2 to, float duration)
         {
-            return FluxFactroy.To(() => target.anchoredPosition, pos => target.anchoredPosition = pos,
+            return FluxFactory.To(() => target.anchoredPosition, pos => target.anchoredPosition = pos,
                     to, duration)
                 .SetUnityObject(target);
         }
 
         public static Flow DoAnchorPosX(this RectTransform target, float to, float duration)
         {
-            return FluxFactroy.To(() => target.anchoredPosition.x,
+            return FluxFactory.To(() => target.anchoredPosition.x,
                     x => target.anchoredPosition = target.anchoredPosition.WithX(x),
                     to, duration)
                 .SetUnityObject(target);
@@ -24,7 +24,7 @@ namespace EasyToolkit.Fluxion
 
         public static Flow DoAnchorPosY(this RectTransform target, float to, float duration)
         {
-            return FluxFactroy.To(() => target.anchoredPosition.y,
+            return FluxFactory.To(() => target.anchoredPosition.y,
                     y => target.anchoredPosition = target.anchoredPosition.WithY(y),
                     to, duration)
                 .SetUnityObject(target);
@@ -32,13 +32,13 @@ namespace EasyToolkit.Fluxion
 
         public static Flow DoFade(this CanvasGroup target, float to, float duration)
         {
-            return FluxFactroy.To(() => target.alpha, val => target.alpha = val, to, duration)
+            return FluxFactory.To(() => target.alpha, val => target.alpha = val, to, duration)
                 .SetUnityObject(target);
         }
 
         public static Flow DoMaxVisibleCharacters(this TextMeshProUGUI target, int to, float duration)
         {
-            return FluxFactroy.To(() => target.maxVisibleCharacters, val => target.maxVisibleCharacters = val, to, duration)
+            return FluxFactory.To(() => target.maxVisibleCharacters, val => target.maxVisibleCharacters = val, to, duration)
                 .SetUnityObject(target);
         }
 

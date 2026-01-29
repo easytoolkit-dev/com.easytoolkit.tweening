@@ -2,9 +2,9 @@ using System;
 
 namespace EasyToolkit.Fluxion
 {
-    public class FluxCallback : AbstractFlux
+    public class FluxCallback : FluxBase
     {
-        protected override float? ActualDuration => null;
+        public override float? Duration => null;
 
         internal Action Callback { get; set; }
 
