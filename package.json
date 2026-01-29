@@ -1,8 +1,8 @@
 {
-  "name": "com.easytoolkit.tweening",
+  "name": "com.easytoolkit.fluxion",
   "version": "1.0.0",
-  "displayName": "EasyToolkit Tweening",
-  "description": "Tweening animation system for Unity",
+  "displayName": "EasyToolkit Fluxion",
+  "description": "",
   "unity": "2022.3",
   "unityRelease": "55f1",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/easytoolkit-dev/com.easytoolkit.tweening"
+    "url": "https://github.com/easytoolkit-dev/com.easytoolkit.fluxion"
   },
   "dependencies": {
     "com.easytoolkit.core": "1.0.0"
