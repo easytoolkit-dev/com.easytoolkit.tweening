@@ -58,7 +58,7 @@ namespace EasyToolkit.Fluxion.Core
                     }
                 }
 
-                flux.Update();
+                flux.Update(Time.deltaTime);
             }
 
             foreach (var flux in _pendingKillFluxes)

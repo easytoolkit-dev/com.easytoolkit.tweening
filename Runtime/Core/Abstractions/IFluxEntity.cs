@@ -28,7 +28,7 @@ namespace EasyToolkit.Fluxion.Core
         /// <summary>
         /// Updates the Flux state. Called every frame by the engine.
         /// </summary>
-        void Update();
+        void Update(float deltaTime);
 
         /// <summary>
         /// Kills the Flux immediately.

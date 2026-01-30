@@ -1,0 +1,23 @@
+{
+    "name": "EasyToolkit.Fluxion.Tests",
+    "rootNamespace": "EasyToolkit.Fluxion.Tests",
+    "references": [
+        "EasyToolkit.Fluxion",
+        "EasyToolkit.Core",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

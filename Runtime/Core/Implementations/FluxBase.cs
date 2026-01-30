@@ -11,6 +11,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
     {
         private string _id;
         private bool _pendingKillSelf;
+
         public string Id
         {
             get => _id;
@@ -30,9 +31,10 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         public bool InfiniteLoop { get; set; }
         public int LoopCount { get; set; }
 
-        public FluxState CurrentState => _state.CurrentStateKey;
+        public FluxState? CurrentState => _state.CurrentStateKey;
 
         public IFlux OwnerSequence { get; set; }
+        public float PlayElapsedTime { get; set; }
         public event Action<IFlux> Played;
         public event Action<IFlux> Paused;
         public event Action<IFlux> Completed;
@@ -51,6 +53,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 {
                     return OwnerSequence.IsPendingKill;
                 }
+
                 return false;
             }
             set => _pendingKillSelf = value;
@@ -58,9 +61,8 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         protected bool IsInLoop { get; private set; }
 
-        private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>();
+        private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>(allowMissingStates: true);
         private bool _pause;
-        private float _playElapsedTime;
 
         public void Kill()
         {
@@ -89,7 +91,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             Killed = null;
 
             _pause = false;
-            _playElapsedTime = 0f;
+            PlayElapsedTime = 0f;
             _state.StartState(FluxState.Idle);
 
             OnReset();
@@ -97,7 +99,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         public void Start()
         {
-            _playElapsedTime = 0f;
+            PlayElapsedTime = 0f;
             OnStart();
 
             if (Delay > 0)
@@ -115,9 +117,11 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             }
         }
 
-        protected virtual void OnLoop() { }
+        protected virtual void OnLoop()
+        {
+        }
 
-        protected virtual void OnStateChanged(FluxState previousState, FluxState newState)
+        protected virtual void OnStateChanged(FluxState? previousState, FluxState newState)
         {
             switch (newState)
             {
@@ -142,10 +146,10 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             }
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
             var stateKey = _state.CurrentStateKey;
-            Assert.IsTrue(stateKey != FluxState.Idle);
+            Assert.IsTrue(stateKey != FluxState.Idle, "Flux is not started.");
 
             if (stateKey == FluxState.Completed)
             {
@@ -154,14 +158,15 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             if (stateKey != FluxState.Paused)
             {
-                _playElapsedTime += Time.deltaTime;
+                PlayElapsedTime += deltaTime;
             }
 
             if (stateKey == FluxState.Paused)
             {
                 if (!_pause)
                 {
-                    if (_playElapsedTime < Delay)
+                    // Resume: change state and refresh stateKey
+                    if (PlayElapsedTime < Delay)
                     {
                         _state.ChangeState(FluxState.DelayAfterPlay);
                     }
@@ -169,6 +174,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                     {
                         _state.ChangeState(FluxState.Playing);
                     }
+                    stateKey = _state.CurrentStateKey;
                 }
             }
 
@@ -177,26 +183,23 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 if (_pause)
                 {
                     _state.ChangeState(FluxState.Paused);
+                    return;
                 }
 
                 if (stateKey == FluxState.DelayAfterPlay)
                 {
-                    if (_playElapsedTime > Delay)
+                    if (PlayElapsedTime > Delay)
                     {
                         _state.ChangeState(FluxState.Playing);
                     }
                 }
                 else
                 {
-                    var time = _playElapsedTime - Delay;
+                    var time = PlayElapsedTime - Delay;
                     if (Duration.HasValue && time >= Duration.Value)
                     {
-                        // 减小运动误差
-                        if (!time.IsApproximatelyOf(Duration.Value))
-                        {
-                            OnPlaying(Duration.Value);
-                        }
-
+                        // Ensure the final value is reached
+                        OnPlaying(Duration.Value);
                         Complete();
                     }
                     else
@@ -216,7 +219,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         internal void Complete()
         {
-            LastPlayTime = Mathf.Max(_playElapsedTime - Delay, 0f);
+            LastPlayTime = Mathf.Max(PlayElapsedTime - Delay, 0f);
             _state.ChangeState(FluxState.Completed);
 
             if (InfiniteLoop || LoopCount >= 2)

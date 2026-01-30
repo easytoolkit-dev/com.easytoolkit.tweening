@@ -32,7 +32,7 @@ namespace EasyToolkit.Fluxion.Core
         /// <summary>
         /// Gets the current state of the Flux.
         /// </summary>
-        FluxState CurrentState { get; }
+        FluxState? CurrentState { get; }
 
         /// <summary>
         /// Gets a value indicating whether this Flux is pending to be killed.
@@ -49,6 +49,8 @@ namespace EasyToolkit.Fluxion.Core
         /// Gets the sequence that owns this Flux.
         /// </summary>
         IFlux OwnerSequence { get; }
+
+        float PlayElapsedTime { get; }
 
         event Action<IFlux> Played;
         event Action<IFlux> Paused;
