@@ -31,6 +31,9 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         EaseBuilder<IFlow> IFlow.WithEase => new EaseBuilder<IFlow>(this);
         public EaseBuilder<IFlow<TValue>> WithEase => new EaseBuilder<IFlow<TValue>>(this);
 
+        ProfileBuilder<IFlow> IFlow.WithProfile => new ProfileBuilder<IFlow>(this);
+        public ProfileBuilder<IFlow<TValue>> WithProfile => new ProfileBuilder<IFlow<TValue>>(this);
+
         public bool IsSpeedBased { get; set; }
         public bool IsRelative { get; set; }
 

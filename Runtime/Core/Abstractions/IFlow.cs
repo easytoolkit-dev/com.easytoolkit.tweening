@@ -35,6 +35,11 @@ namespace EasyToolkit.Fluxion.Core
         EaseBuilder<IFlow> WithEase { get; }
 
         /// <summary>
+        /// Gets the profile builder for configuring profile via chainable API.
+        /// </summary>
+        ProfileBuilder<IFlow> WithProfile { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the Flow is speed-based.
         /// In speed-based mode, duration is calculated based on speed and distance.
         /// </summary>
@@ -60,5 +65,10 @@ namespace EasyToolkit.Fluxion.Core
         /// Gets the ease builder for configuring easing via chainable API.
         /// </summary>
         new EaseBuilder<IFlow<TValue>> WithEase { get; }
+
+        /// <summary>
+        /// Gets the profile builder for configuring profile via chainable API.
+        /// </summary>
+        new ProfileBuilder<IFlow<TValue>> WithProfile { get; }
     }
 }
