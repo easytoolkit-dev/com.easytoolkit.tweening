@@ -29,15 +29,15 @@ namespace EasyToolkit.Fluxion.Evaluators
 
         private readonly Dictionary<(Type, Type), Type> _fluxEvaluatorTypesByValueType = new();
 
-        private Type GetFluxEvaluatorType(Type valueType, Type effectConfigType)
+        private Type GetFluxEvaluatorType(Type valueType, Type profileType)
         {
-            var key = (valueType, effectConfigType);
+            var key = (valueType, profileType);
             if (_fluxEvaluatorTypesByValueType.TryGetValue(key, out var evaluatorType))
             {
                 return evaluatorType;
             }
 
-            var results = _fluxEvaluatorTypeMatcher.GetMatches(valueType, effectConfigType);
+            var results = _fluxEvaluatorTypeMatcher.GetMatches(valueType, profileType);
             if (results.IsNotNullOrEmpty())
             {
                 evaluatorType = results[0].MatchedType;
@@ -47,9 +47,9 @@ namespace EasyToolkit.Fluxion.Evaluators
             return evaluatorType;
         }
 
-        public IFluxEvaluator GetFluxEvaluator(Type valueType, Type effectConfigType)
+        public IFluxEvaluator GetFluxEvaluator(Type valueType, Type profileType)
         {
-            var processor = GetFluxEvaluatorType(valueType, effectConfigType)?.CreateInstance<IFluxEvaluator>();
+            var processor = GetFluxEvaluatorType(valueType, profileType)?.CreateInstance<IFluxEvaluator>();
             if (processor == null || !processor.CanProcess(valueType))
                 return null;
             return processor;

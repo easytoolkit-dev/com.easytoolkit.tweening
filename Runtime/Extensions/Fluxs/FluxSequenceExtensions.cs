@@ -5,15 +5,15 @@ namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FluxSequenceExtensions
     {
-        public static IFluxSequence Append(this IFluxSequence sequence, IFlux tween)
+        public static IFluxSequence Append(this IFluxSequence sequence, IFlux flux)
         {
-            sequence.AddFluxAsNewClip(tween);
+            sequence.AddFluxAsNewClip(flux);
             return sequence;
         }
 
-        public static IFluxSequence Join(this IFluxSequence sequence, IFlux tween)
+        public static IFluxSequence Join(this IFluxSequence sequence, IFlux flux)
         {
-            sequence.AddFluxToLastClip(tween);
+            sequence.AddFluxToLastClip(flux);
             return sequence;
         }
 

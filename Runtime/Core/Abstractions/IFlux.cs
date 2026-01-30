@@ -56,5 +56,9 @@ namespace EasyToolkit.Fluxion.Core
         event Action<IFlux> Killed;
 
         void Kill();
+
+        void Pause();
+
+        void Resume();
     }
 }

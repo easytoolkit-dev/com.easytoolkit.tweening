@@ -8,7 +8,7 @@ namespace EasyToolkit.Fluxion.Core
     [MonoSingletonConfiguration(MonoSingletonFlags.DontDestroyOnLoad)]
     public class FluxEngine : MonoSingleton<FluxEngine>
     {
-        private readonly RunningFluxList _runningFluxes = new RunningFluxList();
+        private readonly FluxCollection _runningFluxes = new FluxCollection();
         private readonly Dictionary<string, IFlux> _fluxesById = new Dictionary<string, IFlux>();
 
         public void Attach(IFlux flux)

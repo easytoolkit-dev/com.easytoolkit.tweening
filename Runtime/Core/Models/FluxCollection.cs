@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EasyToolkit.Fluxion.Core
 {
-    internal class RunningFluxList
+    internal class FluxCollection
     {
         private readonly List<IFluxEntity> _pendingKillFluxes = new List<IFluxEntity>();
         private readonly List<IFluxEntity> _runningFluxes = new List<IFluxEntity>();
@@ -30,17 +30,6 @@ namespace EasyToolkit.Fluxion.Core
             if (_runningFluxes.Count == 0)
                 return;
 
-            // Iterate backwards or copy list to safely modify? Original code used iteration on list directly which might be unsafe if modification happens,
-            // but the original code was: "foreach (var flux in _runningFluxes)".
-            // And removals happen in a separate loop or via PendingKill.
-            // Let's stick to the original logic structure but using interfaces.
-
-            // Note: If modifications to _runningFluxes happen during Update() (e.g. from callbacks), we might need a copy.
-            // But let's keep it close to original for now unless we see issues.
-            // A safer approach for iteration with potential modification is usually a backwards loop or a copy.
-            // The original code used a simple foreach. Let's assume Add/Remove are not called during this specific loop phase (or handled elsewhere).
-
-            // Use a copy for iteration to safely handle additions/removals during update (defensive coding)
             var count = _runningFluxes.Count;
             for (int i = 0; i < count; i++)
             {

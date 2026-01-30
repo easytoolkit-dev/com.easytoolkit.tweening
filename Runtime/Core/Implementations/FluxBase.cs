@@ -56,7 +56,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             set => _pendingKillSelf = value;
         }
 
-        protected internal bool IsInLoop { get; set; }
+        protected bool IsInLoop { get; private set; }
 
         private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>();
         private bool _pause;
@@ -233,12 +233,12 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             }
         }
 
-        internal void Pause()
+        public void Pause()
         {
             _pause = true;
         }
 
-        internal void Resume()
+        public void Resume()
         {
             _pause = false;
         }

@@ -8,7 +8,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
     internal class FluxSequenceClip
     {
         private readonly List<IFlux> _totalFluxes = new List<IFlux>();
-        private readonly RunningFluxList _runningFluxes = new RunningFluxList();
+        private readonly FluxCollection _runningFluxes = new FluxCollection();
         public FluxSequence Owner { get; }
 
         public FluxSequenceClip(FluxSequence owner)

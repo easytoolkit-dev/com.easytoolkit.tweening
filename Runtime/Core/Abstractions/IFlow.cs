@@ -1,7 +1,6 @@
 using System;
 using EasyToolkit.Fluxion.Eases;
 using EasyToolkit.Fluxion.Profiles;
-using Object = UnityEngine.Object;
 
 namespace EasyToolkit.Fluxion.Core
 {
@@ -17,7 +16,7 @@ namespace EasyToolkit.Fluxion.Core
         /// Gets or sets the Unity Object associated with this Flow.
         /// If the object is destroyed, the Flow will be automatically killed.
         /// </summary>
-        Object UnityObject { get; set; }
+        UnityEngine.Object UnityObject { get; set; }
 
         /// <summary>
         /// Gets or sets the loop type for the Flow (e.g., Restart, Yoyo).

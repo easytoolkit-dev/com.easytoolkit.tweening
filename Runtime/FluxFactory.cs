@@ -15,7 +15,6 @@ namespace EasyToolkit.Fluxion
             flow.Apply(valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
-            // Explicitly attach to engine
             FluxEngine.Instance.Attach(flow);
 
             return flow;
@@ -57,16 +56,6 @@ namespace EasyToolkit.Fluxion
         public static IFlux GetById(string id)
         {
             return FluxEngine.Instance.GetFluxById(id);
-        }
-
-        internal static void RegisterFluxById(string id, IFluxEntity flux)
-        {
-            FluxEngine.Instance.RegisterFluxById(id, flux);
-        }
-
-        internal static void UnregisterFluxById(string id)
-        {
-            FluxEngine.Instance.UnregisterFluxById(id);
         }
     }
 }
