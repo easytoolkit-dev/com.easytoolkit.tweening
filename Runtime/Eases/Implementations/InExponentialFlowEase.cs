@@ -4,12 +4,11 @@ namespace EasyToolkit.Fluxion.Eases.Implementations
 {
     internal class InExponentialFlowEase : IFlowEase
     {
-        private float _power = 2;
+        private readonly float _power;
 
-        public InExponentialFlowEase SetPow(float pow)
+        public InExponentialFlowEase(float pow)
         {
             _power = pow;
-            return this;
         }
 
         float IFlowEase.EaseTime(float time)

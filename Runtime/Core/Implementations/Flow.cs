@@ -15,7 +15,6 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         private FluxValueSetter<TValue> _valueSetter;
 
         private float _duration;
-        private bool _hasUnityObject;
 
         private UnityEngine.Object _unityObject;
         public Type ValueType => typeof(TValue);
@@ -23,22 +22,14 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         public UnityEngine.Object UnityObject
         {
             get => _unityObject;
-            set
-            {
-                if (ReferenceEquals(value, null))
-                {
-                    _hasUnityObject = false;
-                    _unityObject = null;
-                }
-                else
-                {
-                    _hasUnityObject = true;
-                    _unityObject = value;
-                }
-            }
+            set => _unityObject = value;
         }
+
         public LoopType LoopType { get; set; }
         public IFlowEase Ease { get; set; }
+
+        EaseBuilder<IFlow> IFlow.WithEase => new EaseBuilder<IFlow>(this);
+        public EaseBuilder<IFlow<TValue>> WithEase => new EaseBuilder<IFlow<TValue>>(this);
 
         public bool IsSpeedBased { get; set; }
         public bool IsRelative { get; set; }
@@ -86,7 +77,6 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             _valueSetter = null;
             _duration = 0f;
             _unityObject = null;
-            _hasUnityObject = false;
             IsRelative = false;
         }
 
@@ -97,8 +87,11 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             if (_profile == null || profile.GetType() != _profile.GetType())
             {
-                _evaluator = (IFluxEvaluator<TValue>)FluxEvaluatorFactory.Instance.GetFluxEvaluator(ValueType, profile.GetType());
+                _evaluator =
+                    (IFluxEvaluator<TValue>)FluxEvaluatorFactory.Instance.GetFluxEvaluator(ValueType,
+                        profile.GetType());
             }
+
             _profile = profile;
         }
 
@@ -111,7 +104,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         protected override void OnStart()
         {
-            if (_hasUnityObject && _unityObject == null)
+            if (_unityObject == null)
             {
                 IsPendingKill = true;
                 return;
@@ -119,7 +112,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
             if (Ease == null)
             {
-                Ease = EaseFactory.Linear();
+                Ease = EaseFactory.Generic(t => t);
             }
 
             if (_profile == null)
@@ -157,7 +150,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         protected override void OnPlaying(float time)
         {
-            if (_hasUnityObject && _unityObject == null)
+            if (_unityObject == null)
             {
                 IsPendingKill = true;
                 return;

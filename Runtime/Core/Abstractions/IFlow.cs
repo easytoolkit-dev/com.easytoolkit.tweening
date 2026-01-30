@@ -30,6 +30,11 @@ namespace EasyToolkit.Fluxion.Core
         IFlowEase Ease { get; set; }
 
         /// <summary>
+        /// Gets the ease builder for configuring easing via chainable API.
+        /// </summary>
+        EaseBuilder<IFlow> WithEase { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the Flow is speed-based.
         /// In speed-based mode, duration is calculated based on speed and distance.
         /// </summary>
@@ -45,7 +50,15 @@ namespace EasyToolkit.Fluxion.Core
         void SetProfile(IFluxProfile profile);
     }
 
+    /// <summary>
+    /// Generic interface for a Flow (Tween) object with typed value.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value being tweened.</typeparam>
     public interface IFlow<TValue> : IFlow
     {
+        /// <summary>
+        /// Gets the ease builder for configuring easing via chainable API.
+        /// </summary>
+        new EaseBuilder<IFlow<TValue>> WithEase { get; }
     }
 }
