@@ -12,6 +12,11 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         private string _id;
         private bool _pendingKillSelf;
 
+        /// <summary>
+        /// Gets or sets the execution context for this Flux entity.
+        /// </summary>
+        public IFluxContext Context { get; set; }
+
         public string Id
         {
             get => _id;
@@ -60,6 +65,8 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         }
 
         protected bool IsInLoop { get; private set; }
+
+        protected float PreviousDeltaTime { get; private set; }
 
         private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>(allowMissingStates: true);
         private bool _pause;
@@ -148,6 +155,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         public void Update(float deltaTime)
         {
+            PreviousDeltaTime = deltaTime;
             var stateKey = _state.CurrentStateKey;
             Assert.IsTrue(stateKey != FluxState.Idle, "Flux is not started.");
 
@@ -229,6 +237,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
                 IsInLoop = true;
                 _state.ChangeState(FluxState.Idle);
+                Start();
             }
             else
             {

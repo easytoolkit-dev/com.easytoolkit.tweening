@@ -6,6 +6,11 @@ namespace EasyToolkit.Fluxion.Core
     internal interface IFluxEntity : IFlux
     {
         /// <summary>
+        /// Gets or sets the execution context for this Flux entity.
+        /// </summary>
+        IFluxContext Context { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this Flux is pending to be killed.
         /// </summary>
         new bool IsPendingKill { get; set; }

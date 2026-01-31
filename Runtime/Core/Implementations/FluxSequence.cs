@@ -10,10 +10,12 @@ namespace EasyToolkit.Fluxion.Core.Implementations
         private readonly List<IFlux> _totalFluxes = new List<IFlux>();
         private readonly FluxCollection _runningFluxes = new FluxCollection();
         public FluxSequence Owner { get; }
+        public float ElapsedTime { get; private set; }
 
         public FluxSequenceClip(FluxSequence owner)
         {
             Owner = owner;
+            ElapsedTime = 0f;
         }
 
         public void AddFlux(IFlux flux)
@@ -23,7 +25,8 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 throw new Exception("Only one sequence can be added to a flux");
             }
 
-            FluxEngine.Instance.Detach(flux);
+            // Note: Detach is now handled by the Sequence level using Context
+
             ((IFluxEntity)flux).OwnerSequence = Owner;
 
             _runningFluxes.Add((IFluxEntity)flux);
@@ -40,9 +43,16 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             return _totalFluxes.Max(flux => flux.Duration ?? 0f);
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
-            _runningFluxes.Update();
+            ElapsedTime += deltaTime;
+            _runningFluxes.Update(deltaTime);
+        }
+
+        public float GetRemainingDuration()
+        {
+            var totalDuration = GetDuration() ?? 0f;
+            return (totalDuration - ElapsedTime).Clamp(0f, float.MaxValue);
         }
 
         public bool IsAllKilled()
@@ -68,6 +78,9 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         public void AddFluxAsNewClip(IFlux flux)
         {
+            // Detach from current context before adding to sequence
+            Context?.Lifecycle.Detach(flux);
+
             var node = new FluxSequenceClip(this);
             node.AddFlux((IFlowEntity)flux);
             _fluxClips.Add(node);
@@ -75,6 +88,9 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         public void AddFluxToLastClip(IFlux flux)
         {
+            // Detach from current context before adding to sequence
+            Context?.Lifecycle.Detach(flux);
+
             var node = _fluxClips.LastOrDefault();
             if (node == null)
             {
@@ -93,6 +109,32 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         protected override void OnPlaying(float time)
         {
+            var remainingDeltaTime = PreviousDeltaTime;
+
+            while (remainingDeltaTime > 0f && _currentClipIndex < _fluxClips.Count)
+            {
+                var clip = _fluxClips[_currentClipIndex];
+                var clipRemainingDuration = clip.GetRemainingDuration();
+
+                clip.Update(remainingDeltaTime);
+
+                if (clip.IsAllKilled())
+                {
+                    // Calculate the remaining time after this clip completes
+                    remainingDeltaTime -= clipRemainingDuration;
+                    if (remainingDeltaTime < 0f)
+                    {
+                        remainingDeltaTime = 0f;
+                    }
+                    _currentClipIndex++;
+                }
+                else
+                {
+                    // Clip is still running, no remaining time to pass
+                    break;
+                }
+            }
+
             if (_currentClipIndex >= _fluxClips.Count)
             {
                 _actualDuration = 0f;
@@ -102,15 +144,6 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                 }
 
                 Complete();
-                return;
-            }
-
-            var node = _fluxClips[_currentClipIndex];
-            node.Update();
-
-            if (node.IsAllKilled())
-            {
-                _currentClipIndex++;
             }
         }
 

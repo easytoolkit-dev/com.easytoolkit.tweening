@@ -7,9 +7,11 @@ namespace EasyToolkit.Fluxion.Extensions
     {
         public static T WithId<T>(this T flux, string id) where T : IFlux
         {
-            FluxEngine.Instance.UnregisterFluxById(flux.Id);
+            // Use Context if available, otherwise fall back to FluxEngine.Instance
+            var context = ((Core.IFluxEntity)flux).Context ?? FluxEngine.Instance;
+            context?.Registry.Unregister(flux.Id);
             flux.Id = id;
-            FluxEngine.Instance.RegisterFluxById(id, flux);
+            context?.Registry.Register(id, flux);
 
             return flux;
         }

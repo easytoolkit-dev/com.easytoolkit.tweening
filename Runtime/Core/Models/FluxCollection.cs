@@ -12,7 +12,7 @@ namespace EasyToolkit.Fluxion.Core
 
         public bool IsAllKilled()
         {
-            return _runningFluxes.All(flux => flux.CurrentState == FluxState.Killed);
+            return _runningFluxes.All(flux => flux.CurrentState == FluxState.Killed || flux.CurrentState == FluxState.Completed);
         }
 
         public void Add(IFluxEntity flux)
@@ -25,7 +25,7 @@ namespace EasyToolkit.Fluxion.Core
             _runningFluxes.Remove(flux);
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
             if (_runningFluxes.Count == 0)
                 return;
@@ -58,7 +58,12 @@ namespace EasyToolkit.Fluxion.Core
                     }
                 }
 
-                flux.Update(Time.deltaTime);
+                flux.Update(deltaTime);
+
+                if (flux.IsPendingKill)
+                {
+                    _pendingKillFluxes.Add(flux);
+                }
             }
 
             foreach (var flux in _pendingKillFluxes)

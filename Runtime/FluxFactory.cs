@@ -15,6 +15,7 @@ namespace EasyToolkit.Fluxion
             flow.Apply(valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
+            ((IFluxEntity)flow).Context = FluxEngine.Instance;
             FluxEngine.Instance.Attach(flow);
 
             return flow;
@@ -23,6 +24,7 @@ namespace EasyToolkit.Fluxion
         public static IFluxSequence Sequence()
         {
             var sequence = new Core.Implementations.FluxSequence();
+            ((IFluxEntity)sequence).Context = FluxEngine.Instance;
             FluxEngine.Instance.Attach(sequence);
             return sequence;
         }
@@ -31,6 +33,7 @@ namespace EasyToolkit.Fluxion
         {
             var flux = new Core.Implementations.FluxCallback();
             flux.Callback += callback;
+            ((IFluxEntity)flux).Context = FluxEngine.Instance;
             FluxEngine.Instance.Attach(flux);
             return flux;
         }
@@ -44,6 +47,7 @@ namespace EasyToolkit.Fluxion
         {
             IFluxInterval interval = new Core.Implementations.FluxInterval();
             interval.Duration = duration;
+            ((IFluxEntity)interval).Context = FluxEngine.Instance;
             FluxEngine.Instance.Attach(interval);
             return interval;
         }
@@ -55,7 +59,7 @@ namespace EasyToolkit.Fluxion
         /// <returns>如果找到则返回对应的Flux实例，否则返回null</returns>
         public static IFlux GetById(string id)
         {
-            return FluxEngine.Instance.GetFluxById(id);
+            return FluxEngine.Instance.GetById(id);
         }
     }
 }
