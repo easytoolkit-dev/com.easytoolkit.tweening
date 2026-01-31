@@ -9,9 +9,9 @@ namespace EasyToolkit.Fluxion.Extensions
         {
             // Use Context if available, otherwise fall back to FluxEngine.Instance
             var context = ((Core.IFluxEntity)flux).Context ?? FluxEngine.Instance;
-            context?.Registry.Unregister(flux.Id);
+            context?.Registry.UnregisterFlux(flux.Id);
             flux.Id = id;
-            context?.Registry.Register(id, flux);
+            context?.Registry.RegisterFlux(id, flux);
 
             return flux;
         }

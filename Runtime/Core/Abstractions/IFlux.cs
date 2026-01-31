@@ -52,6 +52,11 @@ namespace EasyToolkit.Fluxion.Core
 
         float PlayElapsedTime { get; }
 
+        /// <summary>
+        /// Gets or sets the execution context for this Flux entity.
+        /// </summary>
+        IFluxContext Context { get; set; }
+
         event Action<IFlux> Played;
         event Action<IFlux> Paused;
         event Action<IFlux> Completed;

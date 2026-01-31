@@ -3,7 +3,7 @@ namespace EasyToolkit.Fluxion.Core
     /// <summary>
     /// Provides the execution context for Flux entities, including time, lifecycle management, and registry services.
     /// </summary>
-    internal interface IFluxContext
+    public interface IFluxContext
     {
         /// <summary>
         /// Gets the time provider for accessing time-related values.

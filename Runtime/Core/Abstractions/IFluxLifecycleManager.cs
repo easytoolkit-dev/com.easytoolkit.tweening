@@ -3,7 +3,7 @@ namespace EasyToolkit.Fluxion.Core
     /// <summary>
     /// Manages the lifecycle of Flux entities, including attaching and detaching from the execution engine.
     /// </summary>
-    internal interface IFluxLifecycleManager
+    public interface IFluxLifecycleManager
     {
         /// <summary>
         /// Attaches a Flux to the execution engine for updates.

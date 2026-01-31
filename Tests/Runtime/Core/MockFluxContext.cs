@@ -89,7 +89,7 @@ namespace EasyToolkit.Fluxion.Tests
         /// </summary>
         /// <param name="id">The unique identifier for the Flux.</param>
         /// <param name="flux">The Flux to register.</param>
-        public void Register(string id, IFlux flux)
+        public void RegisterFlux(string id, IFlux flux)
         {
             Fluxes[id] = flux;
         }
@@ -98,7 +98,7 @@ namespace EasyToolkit.Fluxion.Tests
         /// Unregisters a Flux by its identifier.
         /// </summary>
         /// <param name="id">The identifier of the Flux to unregister.</param>
-        public void Unregister(string id)
+        public void UnregisterFlux(string id)
         {
             Fluxes.Remove(id);
         }
@@ -108,7 +108,7 @@ namespace EasyToolkit.Fluxion.Tests
         /// </summary>
         /// <param name="id">The identifier of the Flux to retrieve.</param>
         /// <returns>The Flux with the specified identifier, or null if not found.</returns>
-        public IFlux GetById(string id)
+        public IFlux GetFluxById(string id)
         {
             return Fluxes.GetValueOrDefault(id);
         }

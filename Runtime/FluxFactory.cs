@@ -9,32 +9,33 @@ namespace EasyToolkit.Fluxion
             FluxValueGetter<TValue> valueGetter,
             FluxValueSetter<TValue> valueSetter,
             TValue endValue,
-            float duration)
+            float duration,
+            IFluxContext context = null)
         {
             var flow = new Core.Implementations.Flow<TValue>();
             flow.Apply(valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
 
-            ((IFluxEntity)flow).Context = FluxEngine.Instance;
-            FluxEngine.Instance.Attach(flow);
+            flow.Context = context ?? FluxEngine.Instance;
+            flow.Context.Lifecycle.Attach(flow);
 
             return flow;
         }
 
-        public static IFluxSequence Sequence()
+        public static IFluxSequence Sequence(IFluxContext context = null)
         {
             var sequence = new Core.Implementations.FluxSequence();
-            ((IFluxEntity)sequence).Context = FluxEngine.Instance;
-            FluxEngine.Instance.Attach(sequence);
+            sequence.Context = context ?? FluxEngine.Instance;
+            sequence.Context.Lifecycle.Attach(sequence);
             return sequence;
         }
 
-        public static IFluxCallback Callback(Action callback)
+        public static IFluxCallback Callback(Action callback, IFluxContext context = null)
         {
             var flux = new Core.Implementations.FluxCallback();
             flux.Callback += callback;
-            ((IFluxEntity)flux).Context = FluxEngine.Instance;
-            FluxEngine.Instance.Attach(flux);
+            flux.Context = context ?? FluxEngine.Instance;
+            flux.Context.Lifecycle.Attach(flux);
             return flux;
         }
 
@@ -43,12 +44,12 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         /// <param name="duration">间隔时间（秒）</param>
         /// <returns>间隔Flux对象</returns>
-        public static IFluxInterval Interval(float duration)
+        public static IFluxInterval Interval(float duration, IFluxContext context = null)
         {
             IFluxInterval interval = new Core.Implementations.FluxInterval();
             interval.Duration = duration;
-            ((IFluxEntity)interval).Context = FluxEngine.Instance;
-            FluxEngine.Instance.Attach(interval);
+            interval.Context = context ?? FluxEngine.Instance;
+            interval.Context.Lifecycle.Attach(interval);
             return interval;
         }
 
@@ -57,9 +58,9 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         /// <param name="id">Flux的ID</param>
         /// <returns>如果找到则返回对应的Flux实例，否则返回null</returns>
-        public static IFlux GetById(string id)
+        public static IFlux GetFluxById(string id, IFluxContext context = null)
         {
-            return FluxEngine.Instance.GetById(id);
+            return (context ?? FluxEngine.Instance).Registry.GetFluxById(id);
         }
     }
 }

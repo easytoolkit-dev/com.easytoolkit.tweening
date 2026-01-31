@@ -3,7 +3,7 @@ namespace EasyToolkit.Fluxion.Core
     /// <summary>
     /// Provides time-related values for Flux updates.
     /// </summary>
-    internal interface ITimeProvider
+    public interface ITimeProvider
     {
         /// <summary>
         /// Gets the time in seconds it took to complete the last frame.
