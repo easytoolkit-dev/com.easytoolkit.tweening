@@ -1,6 +1,5 @@
 using System;
 using EasyToolkit.Core.Diagnostics;
-using EasyToolkit.Core.Mathematics;
 using EasyToolkit.Core.Patterns;
 using EasyToolkit.Core.Textual;
 using UnityEngine;
@@ -11,16 +10,50 @@ namespace EasyToolkit.Fluxion.Core.Implementations
     {
         private string _id;
         private bool _pendingKillSelf;
+        private IFluxContext _context;
 
         /// <summary>
         /// Gets or sets the execution context for this Flux entity.
         /// </summary>
-        public IFluxContext Context { get; set; }
+        public IFluxContext Context
+        {
+            get => _context;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value), "Context cannot be null.");
+                }
+
+                if (_context != null && _context != value)
+                {
+                    _context.Lifecycle.Detach(this);
+                }
+
+                if (_context == value)
+                    return;
+
+                _context = value;
+                _context.Lifecycle.Attach(this);
+            }
+        }
 
         public string Id
         {
             get => _id;
-            set => _id = value;
+            set
+            {
+                if (_id != value)
+                {
+                    _context.Registry.UnregisterFlux(_id);
+                    _id = value;
+
+                    if (_id.IsNotNullOrEmpty())
+                    {
+                        _context.Registry.RegisterFlux(_id, this);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -76,11 +109,10 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             _pendingKillSelf = true;
         }
 
-
         protected FluxBase()
         {
             _state.StateChanged += OnStateChanged;
-            Reset();
+            _state.StartState(FluxState.Idle);
         }
 
         public void Reset()
@@ -182,6 +214,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
                     {
                         _state.ChangeState(FluxState.Playing);
                     }
+
                     stateKey = _state.CurrentStateKey;
                 }
             }

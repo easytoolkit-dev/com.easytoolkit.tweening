@@ -6,11 +6,6 @@ namespace EasyToolkit.Fluxion.Core
     public interface IFluxContext
     {
         /// <summary>
-        /// Gets the time provider for accessing time-related values.
-        /// </summary>
-        ITimeProvider Time { get; }
-
-        /// <summary>
         /// Gets the lifecycle manager for attaching and detaching Flux entities.
         /// </summary>
         IFluxLifecycleManager Lifecycle { get; }

@@ -1,5 +1,6 @@
 using System;
 using EasyToolkit.Fluxion.Core;
+using UnityEngine;
 
 namespace EasyToolkit.Fluxion
 {
@@ -10,32 +11,48 @@ namespace EasyToolkit.Fluxion
             FluxValueSetter<TValue> valueSetter,
             TValue endValue,
             float duration,
-            IFluxContext context = null)
+            IFluxContext customContext = null)
         {
             var flow = new Core.Implementations.Flow<TValue>();
             flow.Apply(valueGetter, valueSetter, endValue);
             flow.SetDuration(duration);
-
-            flow.Context = context ?? FluxEngine.Instance;
-            flow.Context.Lifecycle.Attach(flow);
-
+            if (Application.isPlaying)
+            {
+                flow.Context = customContext ?? FluxEngine.Instance;
+            }
+            else
+            {
+                flow.Context = customContext ?? MockFluxEngine.Instance;
+            }
             return flow;
         }
 
-        public static IFluxSequence Sequence(IFluxContext context = null)
+        public static IFluxSequence Sequence(IFluxContext customContext = null)
         {
             var sequence = new Core.Implementations.FluxSequence();
-            sequence.Context = context ?? FluxEngine.Instance;
-            sequence.Context.Lifecycle.Attach(sequence);
+            if (Application.isPlaying)
+            {
+                sequence.Context = customContext ?? FluxEngine.Instance;
+            }
+            else
+            {
+                sequence.Context = customContext ?? MockFluxEngine.Instance;
+            }
             return sequence;
         }
 
-        public static IFluxCallback Callback(Action callback, IFluxContext context = null)
+        public static IFluxCallback Callback(Action callback, IFluxContext customContext = null)
         {
             var flux = new Core.Implementations.FluxCallback();
             flux.Callback += callback;
-            flux.Context = context ?? FluxEngine.Instance;
-            flux.Context.Lifecycle.Attach(flux);
+            if (Application.isPlaying)
+            {
+                flux.Context = customContext ?? FluxEngine.Instance;
+            }
+            else
+            {
+                flux.Context = customContext ?? MockFluxEngine.Instance;
+            }
             return flux;
         }
 
@@ -44,12 +61,18 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         /// <param name="duration">间隔时间（秒）</param>
         /// <returns>间隔Flux对象</returns>
-        public static IFluxInterval Interval(float duration, IFluxContext context = null)
+        public static IFluxInterval Interval(float duration, IFluxContext customContext = null)
         {
             IFluxInterval interval = new Core.Implementations.FluxInterval();
             interval.Duration = duration;
-            interval.Context = context ?? FluxEngine.Instance;
-            interval.Context.Lifecycle.Attach(interval);
+            if (Application.isPlaying)
+            {
+                interval.Context = customContext ?? FluxEngine.Instance;
+            }
+            else
+            {
+                interval.Context = customContext ?? MockFluxEngine.Instance;
+            }
             return interval;
         }
 
@@ -58,9 +81,9 @@ namespace EasyToolkit.Fluxion
         /// </summary>
         /// <param name="id">Flux的ID</param>
         /// <returns>如果找到则返回对应的Flux实例，否则返回null</returns>
-        public static IFlux GetFluxById(string id, IFluxContext context = null)
+        public static IFlux GetFluxById(string id, IFluxContext customContext = null)
         {
-            return (context ?? FluxEngine.Instance).Registry.GetFluxById(id);
+            return (customContext ?? FluxEngine.Instance).Registry.GetFluxById(id);
         }
     }
 }

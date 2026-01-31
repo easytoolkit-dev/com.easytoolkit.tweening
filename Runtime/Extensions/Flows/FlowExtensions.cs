@@ -1,6 +1,4 @@
 using EasyToolkit.Fluxion.Core;
-using EasyToolkit.Fluxion.Eases;
-using UnityEngine;
 
 namespace EasyToolkit.Fluxion.Extensions
 {

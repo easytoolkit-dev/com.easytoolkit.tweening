@@ -1,8 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
+using EasyToolkit.Fluxion;
 using EasyToolkit.Fluxion.Core;
-using EasyToolkit.Fluxion.Core.Implementations;
-using EasyToolkit.Fluxion.Tests;
 
 namespace EasyToolkit.Fluxion.Core.Tests
 {
@@ -41,16 +40,15 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void Sequence_ShouldExecuteFluxesInOrder()
         {
             // Arrange
-            var sequence = new FluxSequence();
+            var sequence = FluxFactory.Sequence();
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.5f);
 
             sequence.AddFluxAsNewClip(flow1);
             sequence.AddFluxAsNewClip(flow2);
-            sequence.Start();
 
             // Act - Run halfway through first flow
-            _runner.UpdateFlux(sequence, 0.25f);
+            _runner.UpdateEngine(0.25f);
 
             // Assert - First flow should be running, second should not have started
             Assert.AreEqual(FluxState.Playing, flow1.CurrentState, "First flow should be playing.");
@@ -59,7 +57,7 @@ namespace EasyToolkit.Fluxion.Core.Tests
             Assert.AreEqual(0f, _valueHolder2.Value, 0.001f, "Second value should not have changed yet.");
 
             // Act - Complete first flow and start second
-            _runner.UpdateFlux(sequence, 0.5f);
+            _runner.UpdateEngine(0.5f);
 
             // Assert - First flow should be killed (completed fluxes are killed), second should be playing
             Assert.AreEqual(FluxState.Killed, flow1.CurrentState, "First flow should be killed.");
@@ -73,15 +71,15 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void Sequence_ShouldComplete_WhenAllFluxesComplete()
         {
             // Arrange
-            var sequence = new FluxSequence();
+            var sequence = FluxFactory.Sequence();
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.3f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.3f);
 
             sequence.AddFluxAsNewClip(flow1);
             sequence.AddFluxAsNewClip(flow2);
-            sequence.Start();
 
             // Act
+            _runner.UpdateEngine(0f);
             _runner.RunToCompletion(sequence, timeStep: 0.1f, maxTime: 5f);
 
             // Assert
@@ -103,16 +101,15 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void Sequence_AddFluxToLastClip_ShouldRunInParallel()
         {
             // Arrange
-            var sequence = new FluxSequence();
+            var sequence = FluxFactory.Sequence();
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.5f);
 
             sequence.AddFluxAsNewClip(flow1);
             sequence.AddFluxToLastClip(flow2); // Add to same clip
-            sequence.Start();
 
             // Act - Run halfway through
-            _runner.UpdateFlux(sequence, 0.25f);
+            _runner.UpdateEngine(0.25f);
 
             // Assert - Both flows should be running in parallel
             Assert.AreEqual(FluxState.Playing, flow1.CurrentState, "First flow should be playing.");
@@ -132,21 +129,21 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void Sequence_Kill_ShouldKillAllChildren()
         {
             // Arrange
-            var sequence = new FluxSequence();
+            var sequence = FluxFactory.Sequence();
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.5f);
 
             sequence.AddFluxAsNewClip(flow1);
             sequence.AddFluxAsNewClip(flow2);
-            sequence.Start();
-            _runner.UpdateFlux(sequence, 0.2f); // Start first flow
+            _runner.UpdateEngine(0.2f); // Start first flow
 
             // Act
             sequence.Kill();
-            sequence.HandleKill();
 
             // Assert
             Assert.IsTrue(sequence.IsPendingKill, "Sequence should be pending kill.");
+
+            _runner.UpdateEngine();
             Assert.AreEqual(FluxState.Killed, flow1.CurrentState, "First flow should be killed.");
             Assert.AreEqual(FluxState.Killed, flow2.CurrentState, "Second flow should be killed.");
         }
@@ -158,22 +155,20 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void Sequence_Killed_ShouldStopAllProgress()
         {
             // Arrange
-            var sequence = new FluxSequence();
+            var sequence = FluxFactory.Sequence();
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.5f);
 
             sequence.AddFluxAsNewClip(flow1);
             sequence.AddFluxAsNewClip(flow2);
-            sequence.Start();
-            _runner.UpdateFlux(sequence, 0.2f);
+            _runner.UpdateEngine(0.2f);
 
             // Act
             sequence.Kill();
-            sequence.HandleKill();
             var value1WhenKilled = _valueHolder1.Value;
             var value2WhenKilled = _valueHolder2.Value;
 
-            _runner.UpdateFlux(sequence, 0.5f);
+            _runner.UpdateEngine(0.5f);
 
             // Assert
             Assert.AreEqual(value1WhenKilled, _valueHolder1.Value, 0.001f, "First value should not change after kill.");
@@ -191,22 +186,15 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void FluxSequenceClip_AddFlux_ShouldDetachFromContext()
         {
             // Arrange
-            var mockContext = new MockFluxContext();
-            var sequence = new FluxSequence();
-            ((IFluxEntity)sequence).Context = mockContext;
+            var sequence = FluxFactory.Sequence();
 
             var flow = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
-            ((IFluxEntity)flow).Context = mockContext;
-
-            // Simulate flow was attached to engine
-            mockContext.Lifecycle.Attach(flow);
 
             // Act
             sequence.AddFluxAsNewClip(flow);
 
             // Assert - The flow should have been detached from the context
-            var mockLifecycle = (MockLifecycleManager)mockContext.Lifecycle;
-            Assert.Contains(flow, mockLifecycle.DetachedFluxes,
+            Assert.IsNull(sequence.Context.Registry.GetFluxById(flow.Id),
                 "Flow should be detached from context when added to sequence.");
         }
 
@@ -217,27 +205,17 @@ namespace EasyToolkit.Fluxion.Core.Tests
         public void AddFluxToLastClip_ShouldDetachFromContext()
         {
             // Arrange
-            var mockContext = new MockFluxContext();
-            var sequence = new FluxSequence();
-            ((IFluxEntity)sequence).Context = mockContext;
+            var sequence = FluxFactory.Sequence();
 
             var flow1 = CreateFlow(_valueHolder1, 0f, 10f, 0.5f);
             var flow2 = CreateFlow(_valueHolder2, 0f, 20f, 0.5f);
 
-            ((IFluxEntity)flow1).Context = mockContext;
-            ((IFluxEntity)flow2).Context = mockContext;
-
-            mockContext.Lifecycle.Attach(flow1);
-            mockContext.Lifecycle.Attach(flow2);
-
             // Act - Add first as new clip, second to same clip
             sequence.AddFluxAsNewClip(flow1);
-            var mockLifecycle = (MockLifecycleManager)mockContext.Lifecycle;
-            mockLifecycle.DetachedFluxes.Clear(); // Clear first detachment
             sequence.AddFluxToLastClip(flow2);
 
             // Assert
-            Assert.Contains(flow2, mockLifecycle.DetachedFluxes,
+            Assert.IsNull(sequence.Context.Registry.GetFluxById(flow2.Id),
                 "Second flow should be detached from context when added to last clip.");
         }
 
@@ -248,22 +226,18 @@ namespace EasyToolkit.Fluxion.Core.Tests
         /// <summary>
         /// Creates a Flow instance for testing.
         /// </summary>
-        private Flow<float> CreateFlow(FloatValueHolder holder, float startValue, float endValue, float duration)
+        private IFlow<float> CreateFlow(FloatValueHolder holder, float startValue, float endValue, float duration)
         {
             // Set initial value
             holder.Value = startValue;
 
-            var flow = new Flow<float>
-            {
-                UnityObject = new GameObject("TestObject") // Required by Flow
-            };
-
-            flow.Apply(
+            var flow = FluxFactory.To(
                 () => holder.Value,
                 v => holder.Value = v,
-                endValue
+                endValue,
+                duration
             );
-            flow.SetDuration(duration);
+            flow.UnityObject = new GameObject("TestObject");
 
             return flow;
         }

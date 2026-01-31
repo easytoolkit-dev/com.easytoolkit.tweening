@@ -9,11 +9,29 @@ namespace EasyToolkit.Fluxion.Core.Tests
     internal class FluxTestRunner
     {
         /// <summary>
+        /// Updates the Flux engine, processing all registered Flux instances.
+        /// </summary>
+        /// <param name="deltaTime">The time elapsed since the last update (default: 0.016s, ~60fps).</param>
+        /// <remarks>
+        /// This method initializes and updates the mock Flux engine. You MUST call this method
+        /// before using <see cref="UpdateFlux"/>, <see cref="RunToCompletion"/>, or <see cref="RunForDuration"/>
+        /// to ensure the Flux instances are properly registered and initialized in the engine.
+        /// </remarks>
+        public void UpdateEngine(float deltaTime = 0.016f)
+        {
+            MockFluxEngine.Instance.Update(deltaTime);
+        }
+
+        /// <summary>
         /// Manually updates a Flux, simulating the passage of time.
         /// </summary>
         /// <param name="flux">The Flux to update.</param>
         /// <param name="deltaTime">The time elapsed since the last update.</param>
-        public void UpdateFlux(IFluxEntity flux, float deltaTime)
+        /// <remarks>
+        /// You MUST call <see cref="UpdateEngine"/> at least once before using this method
+        /// to ensure the Flux instance is properly registered in the engine.
+        /// </remarks>
+        public void UpdateFlux(IFlux flux, float deltaTime)
         {
             if (flux == null)
             {
@@ -25,7 +43,7 @@ namespace EasyToolkit.Fluxion.Core.Tests
                 throw new ArgumentOutOfRangeException(nameof(deltaTime), "Delta time cannot be negative.");
             }
 
-            flux.Update(deltaTime);
+            ((IFluxEntity)flux).Update(deltaTime);
         }
 
         /// <summary>
@@ -34,7 +52,11 @@ namespace EasyToolkit.Fluxion.Core.Tests
         /// <param name="flux">The Flux to run.</param>
         /// <param name="timeStep">The time step for each update (default: 0.016s, ~60fps).</param>
         /// <param name="maxTime">The maximum time to run before timeout (default: 10s).</param>
-        public void RunToCompletion(IFluxEntity flux, float timeStep = 0.016f, float maxTime = 10f)
+        /// <remarks>
+        /// You MUST call <see cref="UpdateEngine"/> at least once before using this method
+        /// to ensure the Flux instance is properly registered in the engine.
+        /// </remarks>
+        public void RunToCompletion(IFlux flux, float timeStep = 0.016f, float maxTime = 10f)
         {
             if (flux == null)
             {
@@ -75,7 +97,11 @@ namespace EasyToolkit.Fluxion.Core.Tests
         /// <param name="flux">The Flux to run.</param>
         /// <param name="duration">The total duration to run.</param>
         /// <param name="timeStep">The time step for each update (default: 0.016s, ~60fps).</param>
-        public void RunForDuration(IFluxEntity flux, float duration, float timeStep = 0.016f)
+        /// <remarks>
+        /// You MUST call <see cref="UpdateEngine"/> at least once before using this method
+        /// to ensure the Flux instance is properly registered in the engine.
+        /// </remarks>
+        public void RunForDuration(IFlux flux, float duration, float timeStep = 0.016f)
         {
             if (flux == null)
             {

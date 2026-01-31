@@ -32,7 +32,7 @@ namespace EasyToolkit.Fluxion.Extensions
         public static IFlow<float> FlowLocalMoveZ(this Transform target, float to, float duration)
         {
             return FluxFactory.To(() => target.localPosition.z,
-                    z => target.localPosition = target.localPosition.WithY(z),
+                    z => target.localPosition = target.localPosition.WithZ(z),
                     to, duration)
                 .WithUnityObject(target);
         }

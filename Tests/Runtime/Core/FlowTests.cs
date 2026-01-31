@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
-using EasyToolkit.Fluxion.Core.Implementations;
+using EasyToolkit.Fluxion;
 
 namespace EasyToolkit.Fluxion.Core.Tests
 {
@@ -30,10 +30,9 @@ namespace EasyToolkit.Fluxion.Core.Tests
         {
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
-            flow.Start();
 
             // Act
-            _runner.UpdateFlux(flow, 0.5f); // Halfway through
+            _runner.UpdateEngine(0.5f); // Halfway through
 
             // Assert
             Assert.AreEqual(5f, _testValue, 0.01f, "Value should be halfway interpolated.");
@@ -47,9 +46,9 @@ namespace EasyToolkit.Fluxion.Core.Tests
         {
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
-            flow.Start();
 
             // Act
+            _runner.UpdateEngine(0f);
             _runner.RunToCompletion(flow, timeStep: 0.1f, maxTime: 5f);
 
             // Assert
@@ -70,17 +69,16 @@ namespace EasyToolkit.Fluxion.Core.Tests
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
             flow.Delay = 0.5f;
-            flow.Start();
 
             // Act - Update less than delay
-            _runner.UpdateFlux(flow, 0.25f);
+            _runner.UpdateEngine(0.25f);
 
             // Assert - Should still be in delay state, value unchanged
             Assert.AreEqual(FluxState.DelayAfterPlay, flow.CurrentState, "Flow should be in DelayAfterPlay state.");
             Assert.AreEqual(0f, _testValue, 0.001f, "Value should not change during delay.");
 
             // Act - Update past delay
-            _runner.UpdateFlux(flow, 0.5f);
+            _runner.UpdateEngine(0.5f);
 
             // Assert - Should now be playing
             Assert.AreEqual(FluxState.Playing, flow.CurrentState, "Flow should be in Playing state after delay.");
@@ -99,9 +97,9 @@ namespace EasyToolkit.Fluxion.Core.Tests
             // Arrange
             var flow = CreateFlow(0f, 10f, 0.5f);
             flow.LoopCount = 3;
-            flow.Start();
 
             // Act - Run through first loop
+            _runner.UpdateEngine(0f);
             _runner.RunForDuration(flow, 0.6f, timeStep: 0.1f);
 
             // Assert - Should have restarted and be playing again
@@ -125,9 +123,9 @@ namespace EasyToolkit.Fluxion.Core.Tests
             var flow = CreateFlow(0f, 10f, 0.5f);
             flow.LoopCount = 2;
             flow.LoopType = LoopType.Yoyo;
-            flow.Start();
 
             // Act - Complete first loop
+            _runner.UpdateEngine(0f);
             _runner.RunForDuration(flow, 0.6f, timeStep: 0.1f);
 
             // Assert - Should be playing second loop (reversing from 10 to 0)
@@ -153,13 +151,12 @@ namespace EasyToolkit.Fluxion.Core.Tests
         {
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
-            flow.Start();
-            _runner.UpdateFlux(flow, 0.3f); // Get to 30%
+            _runner.UpdateEngine(0.3f); // Get to 30%
 
             // Act
             flow.Pause();
             var valueBeforePause = _testValue;
-            _runner.UpdateFlux(flow, 0.5f); // Try to advance while paused
+            _runner.UpdateEngine(0.5f); // Try to advance while paused
 
             // Assert
             Assert.AreEqual(FluxState.Paused, flow.CurrentState, "Flow should be in Paused state.");
@@ -167,7 +164,7 @@ namespace EasyToolkit.Fluxion.Core.Tests
 
             // Act - Resume
             flow.Resume();
-            _runner.UpdateFlux(flow, 0.2f);
+            _runner.UpdateEngine(0.2f);
 
             // Assert
             Assert.AreEqual(FluxState.Playing, flow.CurrentState, "Flow should be Playing after resume.");
@@ -186,14 +183,14 @@ namespace EasyToolkit.Fluxion.Core.Tests
         {
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
-            flow.Start();
 
             // Act
             flow.Kill();
-            flow.HandleKill(); // Simulate engine processing
 
             // Assert
             Assert.IsTrue(flow.IsPendingKill, "IsPendingKill should be true.");
+
+            _runner.UpdateEngine();
             Assert.AreEqual(FluxState.Killed, flow.CurrentState, "State should be Killed.");
         }
 
@@ -205,16 +202,14 @@ namespace EasyToolkit.Fluxion.Core.Tests
         {
             // Arrange
             var flow = CreateFlow(0f, 10f, 1f);
-            flow.Start();
-            _runner.UpdateFlux(flow, 0.3f);
+            _runner.UpdateEngine(0.3f);
 
             // Act
             flow.Kill();
-            flow.HandleKill();
             var valueWhenKilled = _testValue;
 
             // Try to update after kill
-            _runner.UpdateFlux(flow, 0.5f);
+            _runner.UpdateEngine(0.5f);
 
             // Assert
             Assert.AreEqual(valueWhenKilled, _testValue, 0.001f, "Value should not change after kill.");
@@ -227,22 +222,18 @@ namespace EasyToolkit.Fluxion.Core.Tests
         /// <summary>
         /// Creates a Flow instance for testing.
         /// </summary>
-        private Flow<float> CreateFlow(float startValue, float endValue, float duration)
+        private IFlow<float> CreateFlow(float startValue, float endValue, float duration)
         {
             // Set initial value
             _testValue = startValue;
 
-            var flow = new Flow<float>
-            {
-                UnityObject = new GameObject("TestObject") // Required by Flow
-            };
-
-            flow.Apply(
+            var flow = FluxFactory.To(
                 () => _testValue,
                 value => _testValue = value,
-                endValue
+                endValue,
+                duration
             );
-            flow.SetDuration(duration);
+            flow.UnityObject = new GameObject("TestObject");
 
             return flow;
         }

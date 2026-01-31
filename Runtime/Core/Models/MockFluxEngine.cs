@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using EasyToolkit.Core.Collections;
 using EasyToolkit.Core.Patterns;
-using EasyToolkit.Core.Textual;
-using UnityEngine;
 
 namespace EasyToolkit.Fluxion.Core
 {
     /// <summary>
-    /// MonoSingleton that manages the execution context for all Flux entities.
-    /// Implements <see cref="IFluxContext"/> to provide time, lifecycle, and registry services.
+    /// Mock implementation of <see cref="IFluxContext"/> for testing purposes.
     /// </summary>
-    [MonoSingletonConfiguration(MonoSingletonFlags.DontDestroyOnLoad)]
-    public class FluxEngine : MonoSingleton<FluxEngine>, IFluxContext, IFluxLifecycleManager, IFluxRegistry
+    public class MockFluxEngine : Singleton<MockFluxEngine>, IFluxContext, IFluxLifecycleManager, IFluxRegistry
     {
         private readonly FluxCollection _runningFluxes = new FluxCollection();
         private readonly Dictionary<string, IFlux> _fluxesById = new Dictionary<string, IFlux>();
+
+        private MockFluxEngine()
+        {
+        }
 
         /// <summary>
         /// Gets the lifecycle manager for attaching and detaching Flux entities.
@@ -97,9 +98,9 @@ namespace EasyToolkit.Fluxion.Core
             return _fluxesById.GetValueOrDefault(id);
         }
 
-        private void Update()
+        public void Update(float deltaTime = 0.016f)
         {
-            _runningFluxes.Update(Time.deltaTime);
+            _runningFluxes.Update(deltaTime);
         }
     }
 }

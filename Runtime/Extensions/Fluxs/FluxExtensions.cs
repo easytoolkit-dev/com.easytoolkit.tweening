@@ -5,14 +5,15 @@ namespace EasyToolkit.Fluxion.Extensions
 {
     public static class FluxExtensions
     {
+        public static T WithContext<T>(this T flux, IFluxContext context) where T : IFlux
+        {
+            flux.Context = context;
+            return flux;
+        }
+
         public static T WithId<T>(this T flux, string id) where T : IFlux
         {
-            // Use Context if available, otherwise fall back to FluxEngine.Instance
-            var context = ((Core.IFluxEntity)flux).Context ?? FluxEngine.Instance;
-            context?.Registry.UnregisterFlux(flux.Id);
             flux.Id = id;
-            context?.Registry.RegisterFlux(id, flux);
-
             return flux;
         }
 
