@@ -82,7 +82,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             Context?.Lifecycle.Detach(flux);
 
             var node = new FluxSequenceClip(this);
-            node.AddFlux((IFlowEntity)flux);
+            node.AddFlux((IFluxEntity)flux);
             _fluxClips.Add(node);
         }
 
@@ -98,7 +98,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
             }
             else
             {
-                node.AddFlux((IFlowEntity)flux);
+                node.AddFlux((IFluxEntity)flux);
             }
         }
 
