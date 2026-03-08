@@ -101,7 +101,7 @@ namespace EasyToolkit.Fluxion.Core.Implementations
 
         protected float PreviousDeltaTime { get; private set; }
 
-        private readonly StateMachine<FluxState> _state = new StateMachine<FluxState>(allowMissingStates: true);
+        private readonly IStateMachine<FluxState> _state = StateMachineFactory.CreateLenient<FluxState>();
         private bool _pause;
 
         public void Kill()
